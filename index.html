@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lupus Nephritis Clinical Decision Support 2025 — v6.4</title>
+<style>
+    :root {
+        --primary: #1a237e; --primary-light: #283593; --primary-lighter: #3f51b5;
+        --accent: #e91e63; --success: #2e7d32; --warning: #f57f17; --danger: #c62828;
+        --gray-50: #f8f9fa; --gray-100: #f1f3f5; --gray-200: #e9ecef; --gray-300: #dee2e6;
+        --gray-400: #ced4da; --gray-500: #adb5bd; --gray-600: #868e96; --gray-700: #495057;
+        --gray-800: #343a40; --gray-900: #212529;
+        --shadow: 0 4px 24px rgba(0,0,0,0.10);
+        --shadow-hover: 0 8px 40px rgba(0,0,0,0.15);
+        --radius: 12px; --radius-sm: 8px; --transition: 0.25s ease;
+        --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: var(--font);
+        background: linear-gradient(145deg, #eef2f7 0%, #f8fafc 100%);
+        min-height: 100vh; padding: 2rem 1rem; color: var(--gray-900);
+    }
+    .container { max-width: 1500px; margin: 0 auto; }
+    .app-header {
+        text-align: center; margin-bottom: 2rem; padding: 1.75rem 1.5rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        border-radius: var(--radius); color: #fff; box-shadow: var(--shadow);
+    }
+    .app-header h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 0.25rem; }
+    .app-header .subtitle { font-size: 0.95rem; opacity: 0.9; font-weight: 300; max-width: 920px; margin: 0 auto; }
+    .app-header .badge {
+        display: inline-block; margin-top: 0.6rem; padding: 0.2rem 0.9rem;
+        background: rgba(255,255,255,0.18); border-radius: 30px;
+        font-size: 0.75rem; font-weight: 500;
+    }
+    .app-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+        gap: 1.5rem; align-items: start;
+    }
+    @media (max-width: 1200px) { .app-grid { grid-template-columns: 1fr; } }
+    .card {
+        background: #fff; border-radius: var(--radius); padding: 1.25rem 1.5rem;
+        box-shadow: var(--shadow); transition: box-shadow var(--transition);
+        border: 1px solid var(--gray-200);
+    }
+    .card:hover { box-shadow: var(--shadow-hover); }
+    .card-title {
+        font-size: 1.05rem; font-weight: 700; color: var(--primary);
+        display: flex; align-items: center; gap: 0.5rem;
+        margin-bottom: 1rem; padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--gray-200);
+    }
+    .section-title {
+        font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.5px; color: var(--gray-600);
+        margin: 1rem 0 0.5rem 0; padding-bottom: 0.25rem;
+        border-bottom: 1px dashed var(--gray-300);
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+    .section-title .right-slot { font-size: 0.7rem; text-transform: none; letter-spacing: 0; font-weight: 500; }
+    .form-group { margin-bottom: 0.85rem; }
+    .form-label {
+        display: block; font-weight: 600; font-size: 0.8rem;
+        color: var(--gray-700); margin-bottom: 0.2rem;
+    }
+    .form-label .required { color: var(--danger); margin-left: 2px; }
+    .form-control {
+        width: 100%; padding: 0.55rem 0.8rem; font-size: 0.9rem;
+        border: 1.5px solid var(--gray-300); border-radius: var(--radius-sm);
+        background: #fff; font-family: inherit; color: var(--gray-900);
+        transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .form-control:focus {
+        outline: none; border-color: var(--primary-lighter);
+        box-shadow: 0 0 0 4px rgba(63,81,181,0.12);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; }
+    @media (max-width: 560px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } }
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; padding-top: 0.2rem; }
+    .checkbox-group label {
+        display: flex; align-items: center; gap: 0.35rem;
+        font-size: 0.82rem; cursor: pointer; color: var(--gray-800);
+    }
+    .checkbox-group input[type="checkbox"] {
+        width: 1rem; height: 1rem; accent-color: var(--primary-lighter); cursor: pointer;
+    }
+    .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+        padding: 0.6rem 1.4rem; font-size: 0.9rem; font-weight: 600;
+        border: none; border-radius: var(--radius-sm); cursor: pointer;
+        transition: all var(--transition); text-decoration: none; font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,35,126,0.30); }
+    .btn-secondary { background: var(--gray-200); color: var(--gray-800); }
+    .btn-secondary:hover { background: var(--gray-300); }
+    .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.78rem; }
+    .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem; }
+
+    .global-unit-toggle {
+        display: inline-flex; border: 2px solid var(--primary-lighter);
+        border-radius: 24px; overflow: hidden; font-size: 0.8rem;
+        background: #fff; box-shadow: 0 2px 8px rgba(63,81,181,0.15);
+    }
+    .global-unit-toggle button {
+        background: #fff; border: none; padding: 0.35rem 1rem;
+        cursor: pointer; font-family: inherit; font-size: 0.8rem;
+        color: var(--primary); font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    .global-unit-toggle button.active { background: var(--primary); color: #fff; }
+    .global-unit-toggle button:not(.active):hover { background: #e8eaf6; }
+
+    .data-entry-wrap {
+        overflow-x: auto; margin-top: 0.4rem;
+        border: 1px solid var(--gray-300); border-radius: var(--radius-sm); background: #fff;
+    }
+    .data-entry-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 760px; }
+    .data-entry-table th, .data-entry-table td {
+        padding: 0.35rem 0.4rem; border: 1px solid var(--gray-200);
+        text-align: center; vertical-align: middle;
+    }
+    .data-entry-table th {
+        background: var(--primary-lighter); color: #fff;
+        font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.3px; position: sticky; top: 0;
+    }
+    .data-entry-table td:first-child {
+        background: var(--gray-100); font-weight: 600; text-align: left;
+        padding-left: 0.6rem; white-space: nowrap;
+        position: sticky; left: 0; z-index: 1;
+    }
+    .data-entry-table input {
+        width: 100%; border: none; background: transparent; text-align: center;
+        font-size: 0.8rem; font-family: inherit; padding: 0.15rem; color: var(--gray-900);
+    }
+    .data-entry-table input:focus {
+        outline: 2px solid var(--primary-lighter); background: #fffde7; border-radius: 3px;
+    }
+    .data-entry-table .unit-cell { font-size: 0.68rem; color: var(--gray-600); font-weight: 400; }
+    .data-entry-table .trend-cell {
+        font-size: 0.7rem; color: var(--gray-700); font-weight: 600;
+        padding: 0.2rem 0.4rem; text-align: left; white-space: nowrap;
+        background: var(--gray-50);
+    }
+    .data-entry-table .trend-cell .slope-pos { color: var(--success); }
+    .data-entry-table .trend-cell .slope-neg { color: var(--danger); }
+    .data-entry-table .trend-cell .slope-flat { color: var(--gray-600); }
+    .data-entry-actions { display: flex; gap: 0.4rem; margin-top: 0.4rem; flex-wrap: wrap; }
+
+    .result-area {
+        margin-top: 1.1rem; padding: 1rem 1.25rem;
+        border-radius: var(--radius-sm); background: var(--gray-50);
+        border-left: 5px solid var(--primary-lighter);
+        display: none; animation: slideUp 0.35s ease;
+    }
+    .result-area.visible { display: block; }
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .result-area h3 {
+        font-size: 0.95rem; color: var(--primary);
+        margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .result-item {
+        padding: 0.4rem 0; border-bottom: 1px solid var(--gray-200);
+        font-size: 0.88rem; display: flex; gap: 0.5rem; align-items: baseline;
+    }
+    .result-item:last-child { border-bottom: none; }
+    .result-label { font-weight: 600; color: var(--gray-700); min-width: 160px; flex-shrink: 0; }
+    .result-value { color: var(--gray-900); word-break: break-word; flex: 1; }
+    .tag {
+        display: inline-block; padding: 0.12rem 0.6rem; border-radius: 20px;
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .tag-success { background: #e8f5e9; color: var(--success); }
+    .tag-warning { background: #fff3e0; color: var(--warning); }
+    .tag-danger  { background: #ffebee; color: var(--danger); }
+    .tag-info    { background: #e3f2fd; color: var(--primary-light); }
+    .badge-pill {
+        display: inline-block; padding: 0.12rem 0.6rem; border-radius: 20px;
+        background: var(--gray-200); font-size: 0.7rem; font-weight: 600; color: var(--gray-700);
+    }
+    .step-list { list-style: none; padding: 0; margin: 0.4rem 0 0 0; }
+    .step-list li {
+        padding: 0.35rem 0 0.35rem 1.4rem; position: relative;
+        font-size: 0.86rem; border-bottom: 1px solid var(--gray-200);
+    }
+    .step-list li::before {
+        content: "▹"; position: absolute; left: 0; color: var(--primary-lighter); font-weight: 700;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .alert {
+        padding: 0.55rem 0.85rem; border-radius: var(--radius-sm);
+        font-size: 0.85rem; margin-bottom: 0.6rem; border-left: 4px solid;
+    }
+    .alert-danger  { background: #ffebee; border-color: var(--danger); color: #8e0000; }
+    .alert-warning { background: #fff3e0; border-color: var(--warning); color: #7a4b00; }
+    .alert-info    { background: #e3f2fd; border-color: var(--primary-light); color: #0d47a1; }
+    .tip { position: relative; border-bottom: 1px dotted var(--primary-lighter); cursor: help; color: var(--primary); }
+    .tip .tip-content {
+        visibility: hidden; opacity: 0; position: absolute; z-index: 30;
+        bottom: 130%; left: 50%; transform: translateX(-50%);
+        width: 340px; max-width: 85vw; background: var(--gray-900); color: #fff;
+        padding: 0.6rem 0.8rem; border-radius: var(--radius-sm);
+        font-size: 0.78rem; line-height: 1.4;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+        pointer-events: none;
+    }
+    .tip .tip-content::after {
+        content: ""; position: absolute; top: 100%; left: 50%;
+        margin-left: -6px; border-width: 6px; border-style: solid;
+        border-color: var(--gray-900) transparent transparent transparent;
+    }
+    .tip:hover .tip-content { visibility: visible; opacity: 1; }
+    .agent-table, .dose-table {
+        width: 100%; border-collapse: collapse; font-size: 0.8rem;
+        margin-top: 0.4rem; background: #fff; border-radius: var(--radius-sm); overflow: hidden;
+    }
+    .agent-table th, .agent-table td, .dose-table th, .dose-table td {
+        padding: 0.5rem 0.6rem; text-align: left;
+        border-bottom: 1px solid var(--gray-200); vertical-align: top;
+    }
+    .agent-table th { background: var(--primary); color: #fff; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+    .dose-table th { background: var(--primary-lighter); color: #fff; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+    .agent-table tr:nth-child(even) td, .dose-table tr:nth-child(even) td { background: var(--gray-50); }
+    .agent-table tr.recommended td { background: #e8f5e9 !important; }
+    .agent-table tr.recommended td:first-child { font-weight: 700; color: var(--success); }
+    .dose-highlight { background: #fff8e1 !important; font-weight: 600; }
+    .gantt-wrap, .chart-wrap {
+        overflow-x: auto; margin-top: 0.5rem;
+        border: 1px solid var(--gray-200); border-radius: var(--radius-sm);
+        background: #fff; padding: 0.5rem;
+    }
+    .chart-legend {
+        display: flex; flex-wrap: wrap; gap: 0.8rem;
+        margin-top: 0.5rem; font-size: 0.78rem; color: var(--gray-700);
+    }
+    .chart-legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
+    .chart-legend .swatch { display: inline-block; width: 14px; height: 4px; border-radius: 2px; }
+    .chart-legend .swatch-dashed { display: inline-block; width: 14px; height: 0; border-top: 2px dashed; }
+    .chart-legend .swatch-band { display: inline-block; width: 14px; height: 10px; border-radius: 2px; opacity: 0.5; }
+
+    .agent-detail-card {
+        margin-bottom: 1rem; padding: 0.75rem 0.95rem;
+        border-left: 4px solid var(--gray-400);
+        background: var(--gray-50); border-radius: 6px;
+    }
+    .agent-detail-card.preferred { border-left-color: var(--success); background: #e8f5e9; }
+    .agent-detail-card.caution { border-left-color: var(--danger); background: #ffebee; }
+    .agent-detail-card.warning { border-left-color: var(--warning); background: #fff3e0; }
+    .agent-detail-card .agent-header {
+        font-weight: 700; color: var(--primary); font-size: 0.95rem;
+        margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .agent-detail-card .subsection-title {
+        font-size: 0.85rem; color: var(--primary); font-weight: 700;
+        margin: 0.7rem 0 0.25rem 0; padding-bottom: 0.2rem;
+        border-bottom: 1px solid var(--gray-300);
+    }
+
+    .efficacy-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.5rem; margin-top: 0.4rem;
+    }
+    .efficacy-stat {
+        background: #fff; border: 1px solid var(--gray-200);
+        border-radius: 6px; padding: 0.5rem 0.6rem; text-align: center;
+    }
+    .efficacy-stat .value {
+        font-size: 1.15rem; font-weight: 700; color: var(--primary); line-height: 1.1;
+    }
+    .efficacy-stat .label {
+        font-size: 0.68rem; color: var(--gray-600); margin-top: 0.2rem;
+        text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .efficacy-stat.highlight .value { color: var(--success); }
+
+    @media print {
+        .btn, .no-print { display: none !important; }
+        .card { box-shadow: none !important; border: 1px solid #ccc; break-inside: avoid; }
+        .app-header { background: #1a237e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .result-area { display: block !important; }
+        .gantt-wrap, .chart-wrap, .data-entry-wrap { overflow: visible; }
+        body { background: #fff !important; padding: 0.4in; }
+        .tip .tip-content { display: none; }
+    }
+    .text-muted { color: var(--gray-600); font-size: 0.82rem; }
+    .text-center { text-align: center; }
+    .mt-1 { margin-top: 0.6rem; }
+    .mb-1 { margin-bottom: 0.6rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <header class="app-header">
+        <h1>🩺 Lupus Nephritis Decision Support <span style="opacity:0.6; font-weight:300;">v6.4</span></h1>
+        <p class="subtitle">
+            ACR 2024 / KDIGO 2024 / EULAR 2025. Detailed dosing, monitoring, infection prophylaxis, and efficacy.
+            uACR axis: <strong>US 100–6000 mg/g</strong> · <strong>SI 10–600 mg/mmol</strong>. eGFR in <strong>mL/min</strong>.
+        </p>
+        <span class="badge">⚕️ Clinical decision support only &bull; Not a substitute for clinical judgment</span>
+    </header>
+
+    <div class="app-grid">
+
+        <!-- LEFT -->
+        <section class="card">
+            <div class="card-title">
+                <span>📋</span> Patient Data &amp; Follow-up
+                <div class="global-unit-toggle" style="margin-left:auto;" id="globalUnitToggle">
+                    <button type="button" data-unit="US" class="active">US</button>
+                    <button type="button" data-unit="SI">SI</button>
+                </div>
+            </div>
+
+            <form id="lnForm" novalidate>
+
+                <div class="section-title">Demographics & Anthropometrics</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="patientId">Patient ID</label>
+                        <input type="text" class="form-control" id="patientId" value="LN-2025-001" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="age">Age (years)</label>
+                        <input type="number" class="form-control" id="age" value="28" min="1" max="120" />
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label class="form-label" for="sex">Sex</label>
+                        <select class="form-control" id="sex">
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="weight">Weight (kg)</label>
+                        <input type="number" class="form-control" id="weight" value="62" step="0.1" min="1" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="height">Height (cm)</label>
+                        <input type="number" class="form-control" id="height" value="165" step="0.1" min="50" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="ethnicity">Ethnicity</label>
+                        <select class="form-control" id="ethnicity">
+                            <option value="African">African / Caribbean</option>
+                            <option value="Asian">Asian</option>
+                            <option value="Hispanic">Hispanic</option>
+                            <option value="Caucasian" selected>Caucasian</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">BSA (m²) <span class="text-muted">auto</span></label>
+                        <input type="text" class="form-control" id="bsaDisplay" value="—" readonly />
+                    </div>
+                </div>
+
+                <div class="section-title">Baseline Renal &amp; Serologic</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="proteinuria">UPCR <span class="unit" id="proteinuriaUnit">(g/g)</span></label>
+                        <input type="number" class="form-control" id="proteinuria" value="4.2" step="0.1" min="0" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="baselineProteinuria">Baseline UPCR <span class="unit" id="baselineProteinuriaUnit">(g/g)</span></label>
+                        <input type="number" class="form-control" id="baselineProteinuria" value="4.2" step="0.1" min="0" />
+                    </div>
+                </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label class="form-label" for="egfr">eGFR <span class="unit" id="egfrUnit">(mL/min)</span></label>
+                        <input type="number" class="form-control" id="egfr" value="55" step="1" min="0" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="egfrSlope">eGFR slope</label>
+                        <input type="number" class="form-control" id="egfrSlope" value="0" step="1" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="sCr">sCr <span class="unit" id="sCrUnit">(mg/dL)</span></label>
+                        <input type="number" class="form-control" id="sCr" value="1.4" step="0.1" min="0" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="months">Months on treatment</label>
+                        <input type="number" class="form-control" id="months" value="0" min="0" step="1" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="bp">BP systolic (mmHg)</label>
+                        <input type="number" class="form-control" id="bp" value="128" step="1" min="0" />
+                    </div>
+                </div>
+
+                <div class="section-title">Clinical Features</div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="hematuria" checked /> Hematuria</label>
+                        <label><input type="checkbox" id="casts" /> Cellular casts</label>
+                        <label><input type="checkbox" id="antiDsDNA" checked /> Anti-dsDNA +</label>
+                        <label><input type="checkbox" id="lowComplement" checked /> Low C3/C4</label>
+                        <label><input type="checkbox" id="extraRenal" /> Extra-renal activity</label>
+                        <label><input type="checkbox" id="hypertension" checked /> Hypertension</label>
+                        <label><input type="checkbox" id="diabetes" /> Diabetes</label>
+                        <label><input type="checkbox" id="onHCQ" /> On Hydroxychloroquine</label>
+                        <label><input type="checkbox" id="antiPLA2R" /> Anti-PLA2R +</label>
+                    </div>
+                </div>
+                <div class="section-title">Risk &amp; Safety Flags</div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="hbv" /> Hepatitis B</label>
+                        <label><input type="checkbox" id="hcv" /> Hepatitis C</label>
+                        <label><input type="checkbox" id="latentTB" /> Latent TB</label>
+                        <label><input type="checkbox" id="pregnancy" /> Pregnant / planning</label>
+                        <label><input type="checkbox" id="priorCYC" /> Prior cyclophosphamide</label>
+                        <label><input type="checkbox" id="obesity" /> BMI ≥ 30</label>
+                        <label><input type="checkbox" id="aps" /> Antiphospholipid syndrome</label>
+                        <label><input type="checkbox" id="avnHistory" /> Prior avascular necrosis</label>
+                    </div>
+                </div>
+                <div class="section-title">Histology</div>
+                <div class="form-group">
+                    <label class="form-label" for="lnClass">ISN/RPS LN Class <span class="required">*</span></label>
+                    <select class="form-control" id="lnClass">
+                        <option value="">— Select Class —</option>
+                        <option value="I">Class I — Minimal mesangial</option>
+                        <option value="II">Class II — Mesangial proliferative</option>
+                        <option value="III" selected>Class III — Focal proliferative</option>
+                        <option value="IV">Class IV — Diffuse proliferative</option>
+                        <option value="V">Class V — Membranous</option>
+                        <option value="VI">Class VI — Advanced sclerosing</option>
+                    </select>
+                </div>
+
+                <div class="section-title">💾 CSV Import / Export</div>
+                <div class="data-entry-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnExportCSV">⬇ Export all</button>
+                    <label class="btn btn-secondary btn-sm" style="cursor:pointer;">
+                        ⬆ Import CSV
+                        <input type="file" id="csvFileInput" accept=".csv" style="display:none;" />
+                    </label>
+                </div>
+
+                <div class="section-title" style="margin-top:1.25rem;">
+                    📈 Follow-up Table 1 — Renal &amp; Serologic
+                    <span class="right-slot text-muted" id="renalTableUnitsHint">Currently: US units</span>
+                </div>
+                <div class="data-entry-wrap">
+                    <table class="data-entry-table" id="renalTable">
+                        <thead>
+                            <tr>
+                                <th>Time point</th>
+                                <th>0 mo</th><th>3 mo</th><th>6 mo</th><th>9 mo</th>
+                                <th>12 mo</th><th>15 mo</th><th>18 mo</th><th>21 mo</th><th>24 mo</th>
+                                <th>Trend (slope/mo, R²)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-row="egfr">
+                                <td>eGFR <span class="unit-cell" id="tbl_egfr_unit">(mL/min)</span></td>
+                                <td><input type="number" data-month="0" step="1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="egfr">—</td>
+                            </tr>
+                            <tr data-row="proteinuria">
+                                <td>Proteinuria <span class="unit-cell">(g/d)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="proteinuria">—</td>
+                            </tr>
+                            <tr data-row="uacr">
+                                <td>uACR <span class="unit-cell" id="tbl_uacr_unit">(mg/g)</span></td>
+                                <td><input type="number" data-month="0" step="1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="uacr">—</td>
+                            </tr>
+                            <tr data-row="c3">
+                                <td>C3 <span class="unit-cell" id="tbl_c3_unit">(mg/dL)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="c3">—</td>
+                            </tr>
+                            <tr data-row="c4">
+                                <td>C4 <span class="unit-cell" id="tbl_c4_unit">(mg/dL)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="c4">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="data-entry-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnFillRenalExpected">Prefill expected</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnClearRenal">Clear table</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnExportRenal">⬇ Export table 1</button>
+                </div>
+
+                <div class="section-title" style="margin-top:1.25rem;">
+                    🩸 Follow-up Table 2 — CBC &amp; Hepatic Safety
+                    <span class="right-slot text-muted" id="safetyTableUnitsHint">Currently: US units</span>
+                </div>
+                <div class="data-entry-wrap">
+                    <table class="data-entry-table" id="safetyTable">
+                        <thead>
+                            <tr>
+                                <th>Time point</th>
+                                <th>0 mo</th><th>3 mo</th><th>6 mo</th><th>9 mo</th>
+                                <th>12 mo</th><th>15 mo</th><th>18 mo</th><th>21 mo</th><th>24 mo</th>
+                                <th>Trend (slope/mo, R²)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-row="hb">
+                                <td>Hemoglobin <span class="unit-cell" id="tbl_hb_unit">(g/dL)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="hb">—</td>
+                            </tr>
+                            <tr data-row="wbc">
+                                <td>WBC <span class="unit-cell">(×10⁹/L)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="wbc">—</td>
+                            </tr>
+                            <tr data-row="plt">
+                                <td>Platelets <span class="unit-cell">(×10⁹/L)</span></td>
+                                <td><input type="number" data-month="0" step="1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="plt">—</td>
+                            </tr>
+                            <tr data-row="alt">
+                                <td>ALT <span class="unit-cell" id="tbl_alt_unit">(U/L)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="alt">—</td>
+                            </tr>
+                            <tr data-row="ast">
+                                <td>AST <span class="unit-cell" id="tbl_ast_unit">(U/L)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="ast">—</td>
+                            </tr>
+                            <tr data-row="tbil">
+                                <td>Total bilirubin <span class="unit-cell" id="tbl_tbil_unit">(mg/dL)</span></td>
+                                <td><input type="number" data-month="0" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="3" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="6" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="9" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="12" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="15" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="18" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="21" step="0.1" min="0" /></td>
+                                <td><input type="number" data-month="24" step="0.1" min="0" /></td>
+                                <td class="trend-cell" data-trend-for="tbil">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="data-entry-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnFillSafetyExpected">Prefill expected</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnClearSafety">Clear table</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnExportSafety">⬇ Export table 2</button>
+                </div>
+
+                <div class="btn-group" style="margin-top:1rem;">
+                    <button type="submit" class="btn btn-primary" id="btnAnalyze">🔍 Analyze</button>
+                    <button type="reset" class="btn btn-secondary" id="btnReset">↻ Reset</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- RIGHT -->
+        <section class="card">
+            <div class="card-title">
+                <span>📊</span> Clinical Recommendations
+                <span class="badge-pill" style="margin-left:auto;" id="statusBadge">Ready</span>
+            </div>
+
+            <div id="alertsContainer"></div>
+            <div id="patientSummary" class="result-area"></div>
+            <div id="screeningResult" class="result-area">
+                <h3>🔬 Screening &amp; Biopsy</h3>
+                <div id="screeningContent"></div>
+            </div>
+            <div id="treatmentResult" class="result-area">
+                <h3>💊 Treatment Plan</h3>
+                <div id="treatmentContent"></div>
+            </div>
+            <div id="agentComparisonResult" class="result-area">
+                <h3>⚖️ Add-on Agent Comparison — Efficacy &amp; Safety</h3>
+                <div id="agentComparisonContent"></div>
+            </div>
+            <div id="agentDetailsResult" class="result-area">
+                <h3>🧬 Detailed Add-on Agent Dosing, Monitoring &amp; Efficacy</h3>
+                <div id="agentDetailsContent"></div>
+            </div>
+            <div id="dosingResult" class="result-area">
+                <h3>💉 Patient-Specific Dosing Schedule</h3>
+                <div id="dosingContent"></div>
+            </div>
+            <div id="ganttResult" class="result-area">
+                <h3>📅 Treatment Timeline (Gantt)</h3>
+                <div id="ganttContent"></div>
+            </div>
+            <div id="chart1Result" class="result-area">
+                <h3>📈 Chart 1 — Renal &amp; Serologic Response</h3>
+                <div id="chart1Content"></div>
+            </div>
+            <div id="chart2Result" class="result-area">
+                <h3>🩸 Chart 2 — Hematologic Safety</h3>
+                <div id="chart2Content"></div>
+            </div>
+            <div id="chart3Result" class="result-area">
+                <h3>🧪 Chart 3 — Hepatic Safety</h3>
+                <div id="chart3Content"></div>
+            </div>
+            <div id="metricsResult" class="result-area">
+                <h3>📐 Derived Metrics — eGFR Slope, Time-to-Response, Trendlines</h3>
+                <div id="metricsContent"></div>
+            </div>
+            <div id="responseResult" class="result-area">
+                <h3>📊 Response Assessment</h3>
+                <div id="responseContent"></div>
+            </div>
+            <div id="nextStepsResult" class="result-area">
+                <h3>📌 Next Steps</h3>
+                <ul class="step-list" id="nextStepsList"></ul>
+            </div>
+            <div id="investigationalResult" class="result-area">
+                <h3>🧪 Investigational / Refractory Options</h3>
+                <div id="investigationalContent"></div>
+            </div>
+
+            <div id="emptyState" class="text-muted text-center" style="padding:1.75rem 1rem;">
+                <p style="font-size:2.25rem; margin-bottom:0.25rem;">🧾</p>
+                <p>Enter patient data and follow-up values, then click <strong>Analyze</strong>.</p>
+            </div>
+            <button class="btn btn-secondary no-print mt-1" style="width:100%;" onclick="window.print()">
+                🖨️ Print / Save as PDF
+            </button>
+        </section>
+    </div>
+
+    <footer style="margin-top:2rem; text-align:center; font-size:0.78rem; color:var(--gray-600); border-top:1px solid var(--gray-200); padding-top:1.25rem;">
+        <p>
+            Aligned with <strong>ACR 2024</strong>, <strong>KDIGO 2024</strong>, <strong>EULAR 2025</strong>.
+            Efficacy data: <strong>REGENCY</strong> (obinutuzumab, NEJM 2025) ·
+            <strong>BLISS-LN</strong> (belimumab, NEJM 2020) ·
+            <strong>AURORA</strong> (voclosporin, 2021).
+            <br />For educational and clinical decision support only. Always use clinical judgment.
+        </p>
+    </footer>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    const $ = id => document.getElementById(id);
+    const form = $('lnForm');
+    const btnReset = $('btnReset');
+    const alertsContainer = $('alertsContainer');
+    const statusBadge = $('statusBadge');
+    const emptyState = $('emptyState');
+
+    const patientSummary = $('patientSummary');
+    const screeningResult = $('screeningResult');
+    const treatmentResult = $('treatmentResult');
+    const agentComparisonResult = $('agentComparisonResult');
+    const agentDetailsResult = $('agentDetailsResult');
+    const dosingResult = $('dosingResult');
+    const ganttResult = $('ganttResult');
+    const chart1Result = $('chart1Result');
+    const chart2Result = $('chart2Result');
+    const chart3Result = $('chart3Result');
+    const metricsResult = $('metricsResult');
+    const responseResult = $('responseResult');
+    const nextStepsResult = $('nextStepsResult');
+    const investigationalResult = $('investigationalResult');
+
+    const screeningContent = $('screeningContent');
+    const treatmentContent = $('treatmentContent');
+    const agentComparisonContent = $('agentComparisonContent');
+    const agentDetailsContent = $('agentDetailsContent');
+    const dosingContent = $('dosingContent');
+    const ganttContent = $('ganttContent');
+    const chart1Content = $('chart1Content');
+    const chart2Content = $('chart2Content');
+    const chart3Content = $('chart3Content');
+    const metricsContent = $('metricsContent');
+    const responseContent = $('responseContent');
+    const nextStepsList = $('nextStepsList');
+    const investigationalContent = $('investigationalContent');
+
+    // ============================================================
+    //  GLOBAL UNIT SYSTEM
+    //  eGFR always mL/min (both systems).
+    // ============================================================
+    let unitSystem = 'US';
+
+    const CONV = {
+        uacr:        { US: 'mg/g',           SI: 'mg/mmol',        factor: 0.1131 },
+        egfr:        { US: 'mL/min',         SI: 'mL/min',         factor: 1 },
+        scr:         { US: 'mg/dL',          SI: 'µmol/L',         factor: 88.4 },
+        proteinuria: { US: 'g/d',            SI: 'g/d',            factor: 1 },
+        c3:          { US: 'mg/dL',          SI: 'g/L',            factor: 0.01 },
+        c4:          { US: 'mg/dL',          SI: 'g/L',            factor: 0.01 },
+        hb:          { US: 'g/dL',           SI: 'g/L',            factor: 10 },
+        wbc:         { US: '×10⁹/L',         SI: '×10⁹/L',         factor: 1 },
+        plt:         { US: '×10⁹/L',         SI: '×10⁹/L',         factor: 1 },
+        alt:         { US: 'U/L',            SI: 'µkat/L',         factor: 0.0167 },
+        ast:         { US: 'U/L',            SI: 'µkat/L',         factor: 0.0167 },
+        tbil:        { US: 'mg/dL',          SI: 'µmol/L',         factor: 17.1 }
+    };
+
+    function toUS(value, key) {
+        if (value === null || value === undefined || isNaN(value)) return value;
+        return unitSystem === 'SI' ? value / CONV[key].factor : value;
+    }
+    function fromUS(value, key) {
+        if (value === null || value === undefined || isNaN(value)) return value;
+        return unitSystem === 'SI' ? value * CONV[key].factor : value;
+    }
+    function unitLabel(key) {
+        return unitSystem === 'SI' ? CONV[key].SI : CONV[key].US;
+    }
+
+    // ============================================================
+    //  HELPERS
+    // ============================================================
+    const getCheckbox = id => { const el = $(id); return el ? el.checked : false; };
+    const getVal = id => { const el = $(id); return el ? el.value : ''; };
+    const getNum = id => { const el = $(id); if (!el) return null; const v = parseFloat(el.value); return isNaN(v) ? null : v; };
+    const esc = s => String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+    function calcBSA(weight, height) {
+        if (!weight || !height) return null;
+        return Math.sqrt((weight * height) / 3600);
+    }
+    function calcIBW(heightCm, sex) {
+        if (!heightCm) return null;
+        const inchesOver5ft = (heightCm / 2.54) - 60;
+        if (inchesOver5ft < 0) return (heightCm / 2.54) * 2.20462 * 0.9;
+        const base = (sex === 'Female') ? 45.5 : 50;
+        return Math.max(base + 2.3 * inchesOver5ft, 30);
+    }
+    function tip(text, content) {
+        return '<span class="tip">' + esc(text) +
+            '<span class="tip-content">' + esc(content) + '</span></span>';
+    }
+    function fmt(v, digits) {
+        if (v === null || v === undefined || isNaN(v)) return '—';
+        return Number(v).toFixed(digits === undefined ? 2 : digits).replace(/\.?0+$/, '');
+    }
+
+    const MONTHS = [0,3,6,9,12,15,18,21,24];
+
+    // ============================================================
+    //  READ/WRITE TABLE
+    // ============================================================
+    function readTableUS(tableId) {
+        const table = $(tableId);
+        const out = {};
+        if (!table) return out;
+        table.querySelectorAll('tbody tr[data-row]').forEach(tr => {
+            const key = tr.getAttribute('data-row');
+            const arr = [];
+            tr.querySelectorAll('input[data-month]').forEach(inp => {
+                const raw = parseFloat(inp.value);
+                if (isNaN(raw)) { arr.push(null); return; }
+                arr.push(toUS(raw, key));
+            });
+            out[key] = arr;
+        });
+        return out;
+    }
+
+    function writeTableUS(tableId, rowsUS) {
+        const table = $(tableId);
+        if (!table) return;
+        Object.keys(rowsUS).forEach(key => {
+            const tr = table.querySelector('tr[data-row="' + key + '"]');
+            if (!tr) return;
+            tr.querySelectorAll('input[data-month]').forEach((inp, i) => {
+                const usVal = rowsUS[key][i];
+                if (usVal === null || usVal === undefined) { inp.value = ''; return; }
+                const disp = fromUS(usVal, key);
+                inp.value = disp.toFixed(2).replace(/\.?0+$/, '');
+            });
+        });
+    }
+
+    // ============================================================
+    //  UPDATE UNIT LABELS
+    // ============================================================
+    function updateUnitLabels() {
+        $('proteinuriaUnit').textContent = '(' + unitLabel('proteinuria') + ')';
+        $('baselineProteinuriaUnit').textContent = '(' + unitLabel('proteinuria') + ')';
+        $('egfrUnit').textContent = '(' + unitLabel('egfr') + ')';
+        $('sCrUnit').textContent = '(' + unitLabel('scr') + ')';
+
+        $('tbl_egfr_unit').textContent = '(' + unitLabel('egfr') + ')';
+        $('tbl_uacr_unit').textContent = '(' + unitLabel('uacr') + ')';
+        $('tbl_c3_unit').textContent = '(' + unitLabel('c3') + ')';
+        $('tbl_c4_unit').textContent = '(' + unitLabel('c4') + ')';
+        $('tbl_hb_unit').textContent = '(' + unitLabel('hb') + ')';
+        $('tbl_alt_unit').textContent = '(' + unitLabel('alt') + ')';
+        $('tbl_ast_unit').textContent = '(' + unitLabel('ast') + ')';
+        $('tbl_tbil_unit').textContent = '(' + unitLabel('tbil') + ')';
+
+        const label = unitSystem === 'SI' ? 'SI units' : 'US units';
+        $('renalTableUnitsHint').textContent = 'Currently: ' + label + ' (eGFR always mL/min)';
+        $('safetyTableUnitsHint').textContent = 'Currently: ' + label;
+    }
+
+    // ============================================================
+    //  UNIT TOGGLE
+    // ============================================================
+    function setUnitSystem(newSystem) {
+        if (newSystem === unitSystem) return;
+
+        ['proteinuria','baselineProteinuria','egfr','sCr'].forEach(id => {
+            const el = $(id);
+            const key = id === 'sCr' ? 'scr' : (id === 'egfr' ? 'egfr' : 'proteinuria');
+            const v = parseFloat(el.value);
+            if (isNaN(v)) return;
+            let usVal;
+            if (unitSystem === 'SI') usVal = v / CONV[key].factor;
+            else usVal = v;
+            const newVal = (newSystem === 'SI') ? usVal * CONV[key].factor : usVal;
+            el.value = newVal.toFixed(3).replace(/\.?0+$/, '');
+        });
+
+        ['renalTable','safetyTable'].forEach(tid => {
+            const table = $(tid);
+            table.querySelectorAll('tbody tr[data-row]').forEach(tr => {
+                const key = tr.getAttribute('data-row');
+                tr.querySelectorAll('input[data-month]').forEach(inp => {
+                    const v = parseFloat(inp.value);
+                    if (isNaN(v)) return;
+                    let usVal;
+                    if (unitSystem === 'SI') usVal = v / CONV[key].factor;
+                    else usVal = v;
+                    const newVal = (newSystem === 'SI') ? usVal * CONV[key].factor : usVal;
+                    inp.value = newVal.toFixed(3).replace(/\.?0+$/, '');
+                });
+            });
+        });
+
+        unitSystem = newSystem;
+
+        document.querySelectorAll('#globalUnitToggle button').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-unit') === newSystem);
+        });
+
+        updateUnitLabels();
+        runAnalysis();
+    }
+
+    // ============================================================
+    //  LINEAR REGRESSION
+    // ============================================================
+    function linearRegression(xs, ys) {
+        const pairs = [];
+        for (let i = 0; i < xs.length; i++) {
+            if (xs[i] !== null && ys[i] !== null && xs[i] !== undefined && ys[i] !== undefined)
+                pairs.push([xs[i], ys[i]]);
+        }
+        if (pairs.length < 2) return { slope: null, intercept: null, r2: null, n: pairs.length };
+        const n = pairs.length;
+        const sx = pairs.reduce((a, p) => a + p[0], 0);
+        const sy = pairs.reduce((a, p) => a + p[1], 0);
+        const sxx = pairs.reduce((a, p) => a + p[0] * p[0], 0);
+        const sxy = pairs.reduce((a, p) => a + p[0] * p[1], 0);
+        const denom = n * sxx - sx * sx;
+        if (denom === 0) return { slope: 0, intercept: sy / n, r2: 1, n };
+        const slope = (n * sxy - sx * sy) / denom;
+        const intercept = (sy - slope * sx) / n;
+        const yMean = sy / n;
+        let ssTot = 0, ssRes = 0;
+        pairs.forEach(p => {
+            ssTot += Math.pow(p[1] - yMean, 2);
+            ssRes += Math.pow(p[1] - (slope * p[0] + intercept), 2);
+        });
+        const r2 = ssTot === 0 ? 1 : 1 - ssRes / ssTot;
+        return { slope, intercept, r2, n };
+    }
+
+    // ============================================================
+    //  EXPECTED TRAJECTORY (canonical US)
+    // ============================================================
+    function expectedTrajectory(dataUS) {
+        const baseUPCR = dataUS.baselineProteinuria !== null ? dataUS.baselineProteinuria : 3.0;
+        const baseeGFR = dataUS.egfr !== null ? dataUS.egfr : 60;
+        const baseC3   = dataUS.c3 !== null ? dataUS.c3 : 65;
+        const baseC4   = dataUS.c4 !== null ? dataUS.c4 : 10;
+        const baseHb   = dataUS.hb !== null ? dataUS.hb : 10.5;
+        const baseWBC  = dataUS.wbc !== null ? dataUS.wbc : 5.5;
+        const basePlt  = dataUS.plt !== null ? dataUS.plt : 220;
+        const baseALT  = dataUS.alt !== null ? dataUS.alt : 25;
+        const baseAST  = dataUS.ast !== null ? dataUS.ast : 22;
+        const baseTbil = dataUS.tbil !== null ? dataUS.tbil : 0.7;
+
+        const egfr = MONTHS.map(m => {
+            const dip = -3 * Math.exp(-m / 1.5);
+            const recovery = 2 * (1 - Math.exp(-m / 6));
+            return Math.max(15, baseeGFR + dip + recovery);
+        });
+        const upcr = MONTHS.map(m => {
+            const target = 0.3;
+            const k = Math.log(2) / 4;
+            return target + (baseUPCR - target) * Math.exp(-k * m);
+        });
+        const uacr = upcr.map(v => Math.max(30, v * 1000));
+        const c3 = MONTHS.map(m => {
+            const target = 100;
+            const k = Math.log(2) / 2;
+            return target + (baseC3 - target) * Math.exp(-k * m);
+        });
+        const c4 = MONTHS.map(m => {
+            const target = 22;
+            const k = Math.log(2) / 2;
+            return target + (baseC4 - target) * Math.exp(-k * m);
+        });
+        const hb = MONTHS.map(m => {
+            const rise = 1.2 * (1 - Math.exp(-m / 6));
+            const drugDip = -0.5 * Math.exp(-Math.pow((m - 3) / 4, 2));
+            return Math.max(7, baseHb + rise + drugDip);
+        });
+        const wbc = MONTHS.map(m => {
+            const dip = -1.8 * Math.exp(-Math.pow((m - 2) / 2.5, 2));
+            const recovery = 0.5 * (1 - Math.exp(-m / 6));
+            return Math.max(2.0, baseWBC + dip + recovery);
+        });
+        const plt = MONTHS.map(m => {
+            const dip = -30 * Math.exp(-Math.pow((m - 2) / 3, 2));
+            const recovery = 15 * (1 - Math.exp(-m / 8));
+            return Math.max(80, basePlt + dip + recovery);
+        });
+        const alt = MONTHS.map(m => {
+            const rise = 12 * Math.exp(-Math.pow((m - 4) / 4, 2));
+            return Math.max(5, baseALT + rise);
+        });
+        const ast = MONTHS.map(m => {
+            const rise = 10 * Math.exp(-Math.pow((m - 4) / 4, 2));
+            return Math.max(5, baseAST + rise);
+        });
+        const tbil = MONTHS.map(m => baseTbil + 0.2 * Math.exp(-Math.pow((m - 4) / 5, 2)));
+
+        return { egfr, upcr, uacr, c3, c4, hb, wbc, plt, alt, ast, tbil };
+    }
+
+    function addConfidenceBands(expectedUS) {
+        const bands = {};
+        Object.keys(expectedUS).forEach(k => {
+            const arr = expectedUS[k];
+            const lower = [], upper = [];
+            arr.forEach(v => {
+                const sd = Math.max(Math.abs(v) * 0.15, 0.01);
+                lower.push(Math.max(0, v - sd));
+                upper.push(v + sd);
+            });
+            bands[k] = { lower, upper };
+        });
+        return bands;
+    }
+
+    // ============================================================
+    //  DERIVED METRICS
+    // ============================================================
+    function computeDerivedMetrics(renalUS, safetyUS) {
+        const out = {};
+        if (renalUS.egfr) {
+            const reg = linearRegression(MONTHS, renalUS.egfr);
+            if (reg.slope !== null) {
+                out.egfrSlopePerMonth = reg.slope;
+                out.egfrSlopePerYear = reg.slope * 12;
+                out.egfrR2 = reg.r2;
+                out.egfrN = reg.n;
+            }
+        }
+        const upcr = renalUS.proteinuria || [];
+        out.firstUPCR_lt_0_7 = null;
+        out.firstUPCR_lt_0_5 = null;
+        for (let i = 0; i < upcr.length; i++) {
+            if (upcr[i] === null) continue;
+            if (out.firstUPCR_lt_0_7 === null && upcr[i] < 0.7) out.firstUPCR_lt_0_7 = MONTHS[i];
+            if (out.firstUPCR_lt_0_5 === null && upcr[i] < 0.5) out.firstUPCR_lt_0_5 = MONTHS[i];
+        }
+        const uacrUS = renalUS.uacr || [];
+        out.firstUACR_lt_30 = null;
+        for (let i = 0; i < uacrUS.length; i++) {
+            if (uacrUS[i] === null) continue;
+            if (out.firstUACR_lt_30 === null && uacrUS[i] < 30) out.firstUACR_lt_30 = MONTHS[i];
+        }
+        const c3 = renalUS.c3 || [];
+        out.firstC3_gt_90 = null;
+        for (let i = 0; i < c3.length; i++) {
+            if (c3[i] === null) continue;
+            if (out.firstC3_gt_90 === null && c3[i] > 90) out.firstC3_gt_90 = MONTHS[i];
+        }
+        const c4 = renalUS.c4 || [];
+        out.firstC4_gt_16 = null;
+        for (let i = 0; i < c4.length; i++) {
+            if (c4[i] === null) continue;
+            if (out.firstC4_gt_16 === null && c4[i] > 16) out.firstC4_gt_16 = MONTHS[i];
+        }
+        out.trends = {};
+        ['egfr','proteinuria','uacr','c3','c4'].forEach(k => {
+            out.trends[k] = linearRegression(MONTHS, renalUS[k] || []);
+        });
+        ['hb','wbc','plt','alt','ast','tbil'].forEach(k => {
+            out.trends[k] = linearRegression(MONTHS, safetyUS[k] || []);
+        });
+        return out;
+    }
+
+    function updateTrendCells(derived) {
+        document.querySelectorAll('[data-trend-for]').forEach(cell => {
+            const key = cell.getAttribute('data-trend-for');
+            const t = derived.trends[key];
+            if (!t || t.slope === null) { cell.textContent = '—'; return; }
+            const slope = t.slope;
+            const cls = Math.abs(slope) < 0.001 ? 'slope-flat' : (slope > 0 ? 'slope-pos' : 'slope-neg');
+            const sign = slope > 0 ? '+' : '';
+            cell.innerHTML = '<span class="' + cls + '">' + sign + slope.toFixed(3) + '/mo</span> · R²=' + t.r2.toFixed(2);
+        });
+    }
+
+    // ============================================================
+    //  SNAPSHOT INPUTS
+    // ============================================================
+    function snapshotInputsUS() {
+        const w = getNum('weight'), h = getNum('height');
+        const proteinuriaUS = toUS(getNum('proteinuria'), 'proteinuria');
+        const baselineProteinuriaUS = toUS(getNum('baselineProteinuria'), 'proteinuria');
+        const egfrUS = toUS(getNum('egfr'), 'egfr');
+        const sCrUS = toUS(getNum('sCr'), 'scr');
+        return {
+            patientId: getVal('patientId') || 'Unknown',
+            age: getNum('age'), sex: getVal('sex'),
+            weight: w, height: h,
+            bsa: calcBSA(w, h), ibw: calcIBW(h, getVal('sex')),
+            ethnicity: getVal('ethnicity'),
+            proteinuria: proteinuriaUS,
+            baselineProteinuria: baselineProteinuriaUS,
+            egfr: egfrUS, egfrSlope: getNum('egfrSlope'),
+            sCr: sCrUS, months: getNum('months') || 0, bp: getNum('bp'),
+            hematuria: getCheckbox('hematuria'), casts: getCheckbox('casts'),
+            antiDsDNA: getCheckbox('antiDsDNA'), lowComplement: getCheckbox('lowComplement'),
+            extraRenal: getCheckbox('extraRenal'), hypertension: getCheckbox('hypertension'),
+            diabetes: getCheckbox('diabetes'), onHCQ: getCheckbox('onHCQ'),
+            antiPLA2R: getCheckbox('antiPLA2R'),
+            hbv: getCheckbox('hbv'), hcv: getCheckbox('hcv'), latentTB: getCheckbox('latentTB'),
+            pregnancy: getCheckbox('pregnancy'), priorCYC: getCheckbox('priorCYC'),
+            obesity: getCheckbox('obesity'), aps: getCheckbox('aps'),
+            avnHistory: getCheckbox('avnHistory'),
+            lnClass: getVal('lnClass') || null
+        };
+    }
+
+    // ============================================================
+    //  CLINICAL LOGIC
+    // ============================================================
+    function screenForLN(data) {
+        const recs = { screeningInterval: '6–12 months', biopsyIndicated: false, biopsyUrgency: 'routine', rationale: [] };
+        const reasons = [];
+        if (data.proteinuria !== null && data.proteinuria > 0.5) reasons.push('Proteinuria > 0.5 g/g');
+        if (data.egfr !== null && data.egfr < 60) reasons.push('eGFR < 60 mL/min');
+        if (data.hematuria && data.proteinuria !== null && data.proteinuria > 0.2) reasons.push('Hematuria with proteinuria > 0.2 g/g');
+        const highRisk = [];
+        if (data.age !== null && data.age < 30) highRisk.push('Age < 30');
+        if (data.sex === 'Male') highRisk.push('Male sex');
+        if (['African','Asian','Hispanic'].includes(data.ethnicity)) highRisk.push('High-risk ethnicity');
+        if (data.antiDsDNA && data.lowComplement) highRisk.push('Persistent serological activity');
+        if (highRisk.length) { recs.rationale.push('High-risk factors: ' + highRisk.join(', ')); recs.screeningInterval = 'Consider more frequent monitoring'; }
+        if (reasons.length) { recs.biopsyIndicated = true; recs.biopsyUrgency = 'prompt'; recs.rationale.push('Biopsy indicated for: ' + reasons.join('; ')); }
+        else recs.rationale.push('Biopsy not currently indicated based on available data.');
+        if (recs.biopsyIndicated) recs.rationale.push('May start pulse glucocorticoids while awaiting biopsy.');
+        return recs;
+    }
+
+    function selectThirdAgent(data) {
+        const proteinuria = data.proteinuria, egfr = data.egfr, extraRenal = data.extraRenal;
+        if (extraRenal || (egfr !== null && egfr < 45)) {
+            return { agent: 'Belimumab', short: 'Belimumab',
+                rationale: 'Extra-renal manifestations or reduced kidney function — ACR 2024 prefers belimumab.',
+                trialName: 'BLISS-LN', trialData: 'BLISS-LN (NEJM 2020): CRR ~30% vs 20% at wk 104.' };
+        }
+        if (proteinuria !== null && proteinuria >= 3 && egfr !== null && egfr >= 45) {
+            return { agent: 'Voclosporin', short: 'Voclosporin',
+                rationale: 'Heavy proteinuria (≥ 3 g) with preserved/controlled kidney function — ACR 2024 prefers CNI.',
+                trialName: 'AURORA', trialData: 'AURORA (2021): CRR 41% vs 23%.' };
+        }
+        return { agent: 'Belimumab OR Voclosporin OR Obinutuzumab', short: 'Choice of 3',
+            rationale: 'Either agent acceptable — choose based on extra-renal activity, BP control, preference.',
+            trialName: 'BLISS-LN / AURORA / REGENCY',
+            trialData: 'Belimumab ~30% vs 20%. Voclosporin 41% vs 23%. Obinutuzumab 46.4% vs 33.1%.' };
+    }
+
+    function selectTreatment(data) {
+        if (!data.lnClass) return { diagnosis: 'LN class not confirmed', primaryTherapy: 'Await biopsy before definitive treatment', gcRegimen: {}, isRegimen: {}, adjunctive: {}, monitoring: {}, durationYears: 0, milestones: {} };
+        if (data.pregnancy) return treatPregnancy(data);
+        const hcq = { medication: 'Hydroxychloroquine', dose: '5 mg/kg/day (max 400 mg/day)', adjustment: 'Reduce 25% if eGFR < 30', strength: data.onHCQ ? 'Continue current HCQ' : 'STRONG RECOMMENDATION' };
+        const raas = { medication: 'ACE-I or ARB', indication: 'Any proteinuria elevation', note: 'Titrate to max tolerated; consider MRA in selected patients' };
+        const cls = data.lnClass;
+        if (cls === 'III' || cls === 'IV') return treatProliferative(data, hcq, raas);
+        if (cls === 'V') return treatClassV(data, hcq, raas);
+        return treatOther(data, hcq, raas);
+    }
+
+    function treatPregnancy(data) {
+        const cls = data.lnClass || 'unknown';
+        return {
+            diagnosis: 'LN Class ' + cls + ' — PREGNANCY',
+            primaryTherapy: 'Pregnancy-compatible regimen — AVOID MMF, CYC, ACE-I/ARB',
+            gcRegimen: { pulse: 'Methylprednisolone IV if severe', oral: 'Prednisone lowest effective dose; taper', note: 'Pregnancy-compatible' },
+            isRegimen: { primary: 'Azathioprine OR Calcineurin inhibitor', azathioprine: 'AZA 1.5–2 mg/kg/day', cni: 'Tacrolimus (trough 4–8 ng/mL)', note: 'HCQ should continue' },
+            adjunctive: { hydroxychloroquine: { medication: 'Hydroxychloroquine', dose: '5 mg/kg/day (max 400 mg/day)' }, bloodPressure: 'Labetalol or Nifedipine; AVOID ACE-I/ARB' },
+            monitoring: { proteinuria: 'Monthly', serological: 'Monthly (C3/C4, anti-dsDNA)', renalFunction: 'Monthly', fetal: 'Obstetric monitoring per high-risk protocol' },
+            durationYears: 0, milestones: { maternal: 'Stable renal function and BP throughout pregnancy', fetal: 'Growth and wellbeing per obstetric protocol' }
+        };
+    }
+
+    function treatProliferative(data, hcq, raas) {
+        const third = selectThirdAgent(data);
+        const gc = { pulse: 'Methylprednisolone IV 500 mg/day × 3 (range 250–1000 mg)',
+            oral: 'Prednisone ≤ 0.5 mg/kg/day (max 40 mg/day), taper to ≤ 5 mg/day by ~6 months',
+            note: 'Reduced-dose GC regimen per KDIGO 2024 / ACR 2024' };
+        const isRegimen = {
+            primary: 'Triple therapy: GC + MPAA + ' + third.agent,
+            thirdAgent: third.agent, thirdAgentRationale: third.rationale,
+            thirdAgentTrial: third.trialName + ' — ' + third.trialData,
+            mpaa: 'MMF 2–3 g/day (or equivalent MPAA)',
+            alternative: 'OR Euro-Lupus low-dose IV CYC 500 mg every 2 weeks × 6',
+            note: 'MPAA regimens preferred over CYC regimens'
+        };
+        if (data.hbv || data.hcv || data.latentTB) isRegimen.note += ' — Treat/screen infection + prophylaxis BEFORE immunosuppression';
+        return {
+            diagnosis: 'Active LN Class ' + data.lnClass + ' ± V',
+            primaryTherapy: 'UPFRONT MULTI-TARGET ("TRIPLE") THERAPY',
+            gcRegimen: gc, isRegimen: isRegimen,
+            adjunctive: {
+                hydroxychloroquine: hcq, raasInhibition: raas,
+                sglt2i: (data.proteinuria > 0.5 && data.egfr > 20 && data.egfr < 60 && !data.pregnancy) ? 'Consider SGLT2 inhibitor for nephron protection' : null,
+                anticoagulation: 'Consider if severe proteinuria with low albumin'
+            },
+            monitoring: getMonitoring('proliferative'),
+            durationYears: '3–5 years after complete renal response',
+            milestones: {
+                '3 months': '≥ 25% reduction in proteinuria; ESCALATE EARLIER if rapidly declining GFR or rising proteinuria',
+                '6 months': '≥ 50% reduction in proteinuria; GC target ≤ 5 mg/day',
+                '12 months': 'UPCR < 700 mg/g',
+                ultimate: 'Complete renal response: UPCR < 0.5 g/g with stable/improved eGFR'
+            }
+        };
+    }
+
+    function treatClassV(data, hcq, raas) {
+        const gc = { pulse: 'Methylprednisolone IV 500 mg/day × 3 if severe', oral: 'Prednisone ≤ 0.5 mg/kg/day, taper to ≤ 5 mg/day by ~6 months' };
+        let isRegimen;
+        if (data.proteinuria !== null && data.proteinuria >= 3.5) {
+            isRegimen = { primary: 'GC + one immunosuppressant for nephrotic-range proteinuria', options: 'MPAA (MMF 2–3 g/day), CNI (voclosporin/tacrolimus), CYC, or AZA', note: 'MPAA or CNI preferred; add RAAS blockade for all patients' };
+        } else {
+            isRegimen = { primary: 'GC + one immunosuppressant (MPAA, CNI, CYC, or AZA)', note: 'Conditional recommendation for treatment over no treatment' };
+        }
+        if (data.antiPLA2R) isRegimen.note += ' — Anti-PLA2R +: consider primary membranous nephropathy workup';
+        return {
+            diagnosis: 'Pure Class V LN', primaryTherapy: 'GC + single immunosuppressant + RAAS blockade',
+            gcRegimen: gc, isRegimen: isRegimen,
+            adjunctive: { hydroxychloroquine: hcq, raasInhibition: raas },
+            monitoring: getMonitoring('class_v'),
+            durationYears: '3–5 years after complete renal response',
+            milestones: { '3 months': '≥ 25% reduction in proteinuria', '6 months': '≥ 50% reduction; GC ≤ 5 mg/day', '12 months': 'UPCR < 700 mg/g' }
+        };
+    }
+
+    function treatOther(data, hcq, raas) {
+        if (data.lnClass === 'I' || data.lnClass === 'II') {
+            return { diagnosis: 'LN Class ' + data.lnClass, primaryTherapy: 'Treat according to extra-renal SLE manifestations',
+                gcRegimen: { note: 'Based on extra-renal disease activity' }, isRegimen: { note: 'Immunosuppression for extra-renal SLE as needed' },
+                adjunctive: { hydroxychloroquine: hcq, raasInhibition: data.proteinuria ? raas : 'Monitor proteinuria' },
+                monitoring: getMonitoring('mild'), durationYears: 0, milestones: {} };
+        }
+        return { diagnosis: 'Class VI — Advanced sclerosing LN', primaryTherapy: 'Refer to nephrology — focus on CKD management',
+            gcRegimen: { note: 'Immunosuppression may be limited' }, isRegimen: { note: 'Focus on kidney protection' },
+            adjunctive: { ckdManagement: 'Consider kidney replacement therapy', transplant: 'Kidney transplant preferred over dialysis' },
+            monitoring: getMonitoring('ckd'), durationYears: 0, milestones: {} };
+    }
+
+    function getMonitoring(severity) {
+        if (severity === 'proliferative' || severity === 'class_v') {
+            return { proteinuria: 'Every 3 months (active) / 3–6 months (remission)',
+                serological: 'C3/C4 and anti-dsDNA at every visit',
+                renalFunction: 'sCr/eGFR every 2–4 weeks initially, then as indicated',
+                bloodPressure: 'At every visit',
+                medicationMonitoring: 'HCQ: annual eye exam; CNI: levels + sCr; CYC: CBC' };
+        }
+        if (severity === 'mild') return { proteinuria: 'Every 6–12 months', serological: 'At clinic visits', renalFunction: 'Annually or as indicated' };
+        return { proteinuria: 'Every 3–6 months', renalFunction: 'Every 3 months', transplant: 'Consider when eGFR approaches 15' };
+    }
+
+    function assessResponse(data, months) {
+        if (data.proteinuria === null) return 'Unable to assess — missing current proteinuria';
+        const current = data.proteinuria, baseline = data.baselineProteinuria;
+        if (baseline === null || baseline <= 0) {
+            if (months >= 12 && current < 0.5) return '✅ COMPLETE RESPONSE — UPCR < 0.5 g/g (baseline missing)';
+            return '⚠️ Baseline UPCR missing or invalid.';
+        }
+        const reduction = (baseline - current) / baseline;
+        const pct = Math.round(reduction * 100);
+        if (months >= 12) {
+            if (current < 0.5) return '✅ COMPLETE RESPONSE — UPCR < 0.5 g/g (↓ ' + pct + '%)';
+            if (current < 3 && reduction >= 0.5) return '🟡 PARTIAL RESPONSE — UPCR < 3 g/g and ≥ 50% reduction (' + pct + '% ↓)';
+            return '🔴 NO RESPONSE at 12 months (' + pct + '% ↓)';
+        }
+        if (months >= 6) {
+            if (current < 3 && reduction >= 0.5) return '🟡 PARTIAL RESPONSE — UPCR < 3 g/g and ≥ 50% reduction (' + pct + '% ↓)';
+            return '🔴 NO RESPONSE at 6 months (' + pct + '% ↓; need ≥ 50%)';
+        }
+        if (months >= 3) {
+            if (reduction >= 0.25) return '🟢 ON TRACK — ≥ 25% reduction at 3 months (' + pct + '% ↓)';
+            return '⚠️ SUBOPTIMAL — < 25% reduction at 3 months (' + pct + '% ↓)';
+        }
+        return '⏳ Too early to assess (minimum 3 months required)';
+    }
+
+    function generateNextSteps(data, screening, treatment, months, derived) {
+        const steps = [];
+        if (data.pregnancy) steps.push('⚠️ PREGNANCY: AVOID MMF, CYC, ACE-I/ARB. Use AZA or CNI + glucocorticoids.');
+        if (data.hbv || data.hcv || data.latentTB) steps.push('Screen/treat infection (HBV/HCV/TB) and start prophylaxis before immunosuppression.');
+        if (data.priorCYC) steps.push('Review cumulative CYC dose — fertility preservation, malignancy screening.');
+        if (data.aps) steps.push('Consider anticoagulation for APS.');
+        if (data.avnHistory) steps.push('Prior AVN — minimize GC; consider GC-sparing.');
+        if (screening.biopsyIndicated) { steps.push('Perform kidney biopsy promptly.'); steps.push('May start pulse GC while awaiting biopsy.'); }
+        else steps.push('Continue monitoring per screening schedule: ' + screening.screeningInterval + '.');
+        if (!data.lnClass) steps.push('Kidney biopsy required to determine LN class.');
+        else {
+            if (['III','IV','V'].includes(data.lnClass)) steps.push('Plan for 3–5 years of immunosuppressive therapy.');
+            if (data.lnClass === 'VI') steps.push('Refer to nephrology for advanced CKD management.');
+        }
+        if (months >= 6 && data.proteinuria !== null && data.proteinuria >= 0.5) steps.push('Consider non-response management: assess adherence, escalate therapy.');
+        if (months >= 12 && data.proteinuria !== null && data.proteinuria >= 0.5) steps.push('Consider repeat biopsy for treatment-refractory disease.');
+        if (data.proteinuria > 0.5 && data.egfr > 20 && data.egfr < 60 && !data.pregnancy) steps.push('Consider SGLT2 inhibitor for kidney protection (EULAR 2025).');
+        if (data.proteinuria > 0 && !data.pregnancy) steps.push('Initiate or optimize RAAS inhibition (ACE-I/ARB).');
+        if (!data.onHCQ) steps.push('Initiate Hydroxychloroquine 5 mg/kg/day (strong recommendation).');
+        const rapidDecline = data.egfrSlope !== null && data.egfrSlope <= -5;
+        const risingProteinuria = data.baselineProteinuria !== null && data.proteinuria !== null && data.proteinuria > data.baselineProteinuria;
+        if (months <= 3 && (rapidDecline || risingProteinuria)) steps.push('⚠️ EARLY ESCALATION (≤ 3 months): rapidly declining GFR or rising proteinuria.');
+        if (derived && derived.egfrSlopePerYear !== null && derived.egfrSlopePerYear <= -5) {
+            steps.push('⚠️ Derived eGFR slope ' + derived.egfrSlopePerYear.toFixed(1) + ' mL/min/year — rapid progression.');
+        }
+        if (data.antiPLA2R && (data.lnClass === 'V' || !data.lnClass)) steps.push('Anti-PLA2R +: consider primary membranous nephropathy workup.');
+        if (data.obesity && data.egfr > 20) steps.push('Obesity: SGLT2 inhibitor has added cardiorenal benefit.');
+        if (steps.length === 0) steps.push('Continue current monitoring and treatment plan.');
+        return steps;
+    }
+
+    function buildDosingSchedule(data) {
+        const w = data.weight, egfr = data.egfr;
+        const rows = [];
+        if (w) {
+            const predDose = Math.min(w * 0.5, 40);
+            rows.push({ drug: 'Methylprednisolone (pulse)', dose: '500 mg IV daily × 3 days (range 250–1000 mg)', route: 'IV', freq: 'Once daily × 3', notes: 'Reduced-dose regimen per KDIGO/ACR 2024' });
+            rows.push({ drug: 'Prednisone (oral taper)', dose: predDose.toFixed(1) + ' mg/day (= 0.5 mg/kg × ' + w + ' kg, max 40 mg)', route: 'PO', freq: 'Once daily', notes: 'Taper to ≤ 5 mg/day by ~6 months' });
+        }
+        if (w) {
+            const hcqDose = Math.min(w * 5, 400);
+            const hcqAdj = (egfr !== null && egfr < 30) ? 'Reduce 25% (eGFR < 30)' : 'No adjustment';
+            rows.push({ drug: 'Hydroxychloroquine', dose: hcqDose.toFixed(0) + ' mg/day (5 mg/kg × ' + w + ' kg, max 400 mg)', route: 'PO', freq: 'Once daily', notes: 'Annual eye exam. ' + hcqAdj });
+        }
+        const third = selectThirdAgent(data);
+        if (third.short === 'Belimumab' || third.short === 'Choice of 3') {
+            rows.push({ drug: 'Belimumab (IV)', dose: '10 mg/kg IV (= ' + (w ? (w * 10).toFixed(0) + ' mg' : '—') + ')', route: 'IV', freq: 'Weeks 0, 2, 4, then every 4 weeks', notes: 'BLISS-LN: CRR ~30% vs 20%.' });
+            rows.push({ drug: 'Belimumab (SC alt)', dose: '200 mg SC', route: 'SC', freq: 'Once weekly', notes: 'Same efficacy as IV.' });
+        }
+        if (third.short === 'Voclosporin' || third.short === 'Choice of 3') {
+            const vocDose = (egfr !== null && egfr >= 45) ? '23.7 mg PO BID' : (egfr !== null && egfr >= 30 && egfr < 45) ? '15.8 mg PO BID' : 'Not recommended (eGFR < 30)';
+            rows.push({ drug: 'Voclosporin', dose: vocDose, route: 'PO', freq: 'Twice daily', notes: 'AURORA: CRR 41% vs 23%. Monitor eGFR, BP, K⁺, Mg²⁺, uric acid.' });
+        }
+        if (third.short === 'Choice of 3') {
+            rows.push({ drug: 'Obinutuzumab', dose: '1000 mg IV', route: 'IV', freq: 'Days 1, 15, 168, 182', notes: 'REGENCY: CRR 46.4% vs 33.1%.' });
+        }
+        if (w) {
+            const mmfLow = (1.5 * w).toFixed(0);
+            const mmfHigh = Math.min(3 * w, 3000).toFixed(0);
+            rows.push({ drug: 'Mycophenolate mofetil (MMF)', dose: mmfLow + '–' + mmfHigh + ' mg/day (= 1.5–3 g/day; max 3 g/day)', route: 'PO', freq: 'Divided BID', notes: 'MPAA preferred. Teratogenic.' });
+        }
+        rows.push({ drug: 'ACE-I or ARB', dose: 'Start low, titrate to max tolerated (e.g., lisinopril 10 → 40 mg/day)', route: 'PO', freq: 'Once daily', notes: 'Contraindicated in pregnancy.' });
+        if (data.proteinuria > 0.5 && egfr !== null && egfr > 20 && egfr < 60 && !data.pregnancy) {
+            rows.push({ drug: 'SGLT2 inhibitor (e.g., dapagliflozin)', dose: '10 mg PO', route: 'PO', freq: 'Once daily', notes: 'Nephron protection.' });
+        }
+        if (data.age !== null && data.age >= 40 && data.proteinuria > 0.5) {
+            rows.push({ drug: 'Statin (e.g., atorvastatin)', dose: '20–40 mg PO', route: 'PO', freq: 'Once nightly', notes: 'CV risk reduction in proteinuric CKD.' });
+        }
+        return rows;
+    }
+
+    function renderDosingTable(rows, data) {
+        let html = '';
+        html += '<div class="result-item"><span class="result-label">Weight</span><span class="result-value">' + (data.weight ? data.weight + ' kg' : '—') + '</span></div>';
+        html += '<div class="result-item"><span class="result-label">Height</span><span class="result-value">' + (data.height ? data.height + ' cm' : '—') + '</span></div>';
+        html += '<div class="result-item"><span class="result-label">BSA (Mosteller)</span><span class="result-value">' + (data.bsa ? data.bsa.toFixed(2) + ' m²' : '—') + '</span></div>';
+        html += '<div class="result-item"><span class="result-label">IBW (Devine)</span><span class="result-value">' + (data.ibw ? data.ibw.toFixed(1) + ' kg' : '—') + '</span></div>';
+        html += '<table class="dose-table" style="margin-top:0.6rem;">';
+        html += '<thead><tr><th>Drug</th><th>Patient-Specific Dose</th><th>Route</th><th>Frequency</th><th>Notes</th></tr></thead><tbody>';
+        rows.forEach(r => {
+            html += '<tr><td><strong>' + esc(r.drug) + '</strong></td><td class="dose-highlight">' + esc(r.dose) + '</td><td>' + esc(r.route) + '</td><td>' + esc(r.freq) + '</td><td>' + esc(r.notes) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        return html;
+    }
+
+    // ============================================================
+    //  AGENT COMPARISON
+    // ============================================================
+    function buildAgentComparison(data) {
+        const rows = [
+            {
+                name: 'Belimumab',
+                target: 'BAFF/BLyS',
+                status: 'FDA-approved 2020',
+                dose: '10 mg/kg IV wk 0,2,4 then q4wk; OR 200 mg SC weekly',
+                trial: 'BLISS-LN',
+                trialData: 'BLISS-LN (NEJM 2020, n=448): CRR 30% belimumab vs 20% placebo at wk 104 (OR 1.7; P=0.02). PERR 47% vs 37%. Flare risk ↓ 49%. Benefit greatest with MMF background and non-nephrotic proteinuria.',
+                efficacy: 'CRR 30% vs 20%',
+                preferred: (data.extraRenal || (data.egfr !== null && data.egfr < 45))
+            },
+            {
+                name: 'Voclosporin',
+                target: 'Calcineurin (CNI)',
+                status: 'FDA-approved 2021',
+                dose: '23.7 mg PO BID (15.8 mg BID if eGFR 30–44)',
+                trial: 'AURORA',
+                trialData: 'AURORA (2021, n=357): CRR 41% voclosporin vs 23% control at 52 wk (OR 2.65; P<0.001). Faster proteinuria reduction. High-certainty evidence on NMA.',
+                efficacy: 'CRR 41% vs 23%',
+                preferred: (data.proteinuria !== null && data.proteinuria >= 3 && data.egfr !== null && data.egfr >= 45)
+            },
+            {
+                name: 'Obinutuzumab',
+                target: 'Type II anti-CD20',
+                status: 'FDA-approved 2025',
+                dose: '1000 mg IV day 1, wk 2, 24, 26, 52',
+                trial: 'REGENCY',
+                trialData: 'REGENCY (NEJM 2025, n=271): CRR 46.4% obinutuzumab vs 33.1% standard therapy at wk 76 (adjusted diff 13.4 pp; P=0.02). NOBILITY phase 2: 60% ↓ unfavorable kidney outcome; 57% ↓ flares; 80–91% ↓ 30–40% eGFR decline.',
+                efficacy: 'CRR 46.4% vs 33.1%',
+                preferred: false
+            }
+        ];
+        let html = '<table class="agent-table">';
+        html += '<thead><tr><th>Agent</th><th>Target</th><th>Status</th><th>Efficacy (CRR)</th><th>Key Trial</th><th>Preferred?</th></tr></thead><tbody>';
+        rows.forEach(r => {
+            html += '<tr class="' + (r.preferred ? 'recommended' : '') + '">' +
+                '<td><strong>' + esc(r.name) + '</strong></td>' +
+                '<td>' + esc(r.target) + '</td>' +
+                '<td>' + esc(r.status) + '</td>' +
+                '<td><strong>' + esc(r.efficacy) + '</strong></td>' +
+                '<td>' + tip(r.trial, r.trialData) + '</td>' +
+                '<td>' + (r.preferred ? '<span class="tag tag-success">Yes</span>' : '—') + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        html += '<p class="text-muted" style="margin-top:0.5rem;">' +
+            '<strong>2025 network meta-analysis</strong> (Izcovich, <em>Kidney Int Rep</em>): voclosporin + MPAA (high certainty), belimumab + MPAA (high certainty), and obinutuzumab + MPAA (moderate certainty) all significantly increased CRR vs MPAA alone. Voclosporin showed the largest point estimate. CRR plateaus ~40–46% regardless of mechanism.' +
+            '</p>';
+        return html;
+    }
+
+    // ============================================================
+    //  DETAILED ADD-ON AGENT DOSING, MONITORING & EFFICACY
+    // ============================================================
+    function buildAgentDetails(data) {
+        const third = selectThirdAgent(data);
+        const egfr = data.egfr;
+        const weight = data.weight;
+
+        function row(label, value) {
+            return '<div class="result-item"><span class="result-label">' + esc(label) +
+                '</span><span class="result-value">' + value + '</span></div>';
+        }
+        function subsection(title, html) {
+            return '<div class="subsection-title">' + title + '</div>' + html;
+        }
+        function efficacyGrid(stats) {
+            let h = '<div class="efficacy-grid">';
+            stats.forEach(s => {
+                h += '<div class="efficacy-stat' + (s.highlight ? ' highlight' : '') + '">' +
+                    '<div class="value">' + esc(s.value) + '</div>' +
+                    '<div class="label">' + esc(s.label) + '</div></div>';
+            });
+            return h + '</div>';
+        }
+
+        let html = '';
+
+        // ---------- BELIMUMAB ----------
+        const belRecommended = (third.short === 'Belimumab' || third.short === 'Choice of 3');
+        const belCardClass = belRecommended ? 'agent-detail-card preferred' : 'agent-detail-card';
+        html += '<div class="' + belCardClass + '">';
+        html += '<div class="agent-header">💊 Belimumab (Benlysta) — anti-BAFF mAb' +
+            (belRecommended ? ' <span class="tag tag-success">Preferred for this patient</span>' : '') + '</div>';
+
+        html += subsection('📊 Efficacy (BLISS-LN, NEJM 2020)',
+            efficacyGrid([
+                { value: '30%', label: 'CRR belimumab', highlight: true },
+                { value: '20%', label: 'CRR placebo' },
+                { value: '47%', label: 'PERR belimumab', highlight: true },
+                { value: '37%', label: 'PERR placebo' },
+                { value: '↓49%', label: 'Flare risk reduction', highlight: true },
+                { value: 'n=448', label: 'Trial size' }
+            ]) +
+            '<p style="font-size:0.78rem; color:var(--gray-700); margin-top:0.4rem;">' +
+            'Benefit greatest with MMF background and non-nephrotic proteinuria. ' +
+            'First positive phase 3 trial of any agent in LN.' +
+            '</p>'
+        );
+
+        html += subsection('Dosing (LN indication)',
+            row('IV regimen', '<strong>10 mg/kg IV over 1 hour</strong> at weeks <strong>0, 2, 4</strong>, then <strong>every 4 weeks</strong>. Do NOT give as IV push/bolus.') +
+            row('Patient-specific IV dose', weight ? '<strong>' + (weight * 10).toFixed(0) + ' mg</strong> per dose (= 10 mg/kg × ' + weight + ' kg)' : '—') +
+            row('SC regimen', '<strong>400 mg SC weekly × 4 doses</strong>, then <strong>200 mg SC weekly</strong> (adults and children ≥ 40 kg).') +
+            row('Switching IV → SC', 'After ≥ 2 IV doses, give first <strong>200 mg SC</strong> dose <strong>1–2 weeks after last IV dose</strong>, then continue 200 mg SC weekly.')
+        );
+        html += subsection('Administration & premedication',
+            row('Setting', 'Administer by providers prepared to manage anaphylaxis. Consider premedication for infusion/hypersensitivity reactions.') +
+            row('During infusion', 'Slow or interrupt the infusion if a reaction occurs.')
+        );
+        html += subsection('Monitoring & safety',
+            row('Watch for', 'Hypersensitivity / infusion reactions · Serious infections · <strong>Depression / suicidality</strong> (boxed-warning-level psychiatric monitoring)') +
+            row('CNS lupus', '<span class="tag tag-warning">Not recommended</span> for severe active CNS lupus') +
+            row('BLISS-LN safety', 'Opportunistic infections / zoster / TB / sepsis: <strong>13% belimumab vs 15% placebo</strong> — no excess AE signal')
+        );
+        html += subsection('Infection & vaccination',
+            row('Latent infection', 'Screen for <strong>latent TB</strong> before starting; treat if positive.') +
+            row('Non-live vaccines', 'No treatment interruption needed.') +
+            row('Live vaccines', '<span class="tag tag-danger">Avoid</span> during belimumab therapy.')
+        );
+        html += '</div>';
+
+        // ---------- OBINUTUZUMAB ----------
+        const obiRecommended = (third.short === 'Choice of 3');
+        const obiCardClass = obiRecommended ? 'agent-detail-card warning' : 'agent-detail-card';
+        html += '<div class="' + obiCardClass + '">';
+        html += '<div class="agent-header">💊 Obinutuzumab (Gazyva) — type II anti-CD20 mAb' +
+            (obiRecommended ? ' <span class="tag tag-warning">Alternative triple partner</span>' : '') + '</div>';
+
+        html += subsection('📊 Efficacy (REGENCY, NEJM 2025)',
+            efficacyGrid([
+                { value: '46.4%', label: 'CRR obinutuzumab', highlight: true },
+                { value: '33.1%', label: 'CRR standard therapy' },
+                { value: '+13.4 pp', label: 'Adjusted difference', highlight: true },
+                { value: 'P=0.02', label: 'Primary endpoint' },
+                { value: '↓60%', label: 'Unfavorable kidney outcome (NOBILITY)', highlight: true },
+                { value: 'n=271', label: 'Trial size' }
+            ]) +
+            '<p style="font-size:0.78rem; color:var(--gray-700); margin-top:0.4rem;">' +
+            'First successful phase 3 anti-CD20 trial in LN. NOBILITY phase 2 also showed ' +
+            '<strong>57% reduction in flares</strong> and <strong>80–91% reduction in 30–40% eGFR declines</strong>. ' +
+            'Critically, &gt;50% of obinutuzumab patients still did <em>not</em> reach the primary endpoint.' +
+            '</p>'
+        );
+
+        html += subsection('Dosing (REGENCY schedule)',
+            row('IV regimen', '<strong>1,000 mg IV</strong> on day 1 and at <strong>weeks 2, 24, 26, and 52</strong> (with or without an additional week-50 dose).') +
+            row('Total exposure', '5–6 infusions over ~12 months') +
+            row('Patient-specific dose', weight ? 'Fixed dose: <strong>1,000 mg IV</strong> (not weight-based)' : '—')
+        );
+        html += subsection('Mandatory premedication (per LN protocol)',
+            row('Before EVERY infusion', '<strong>IV methylprednisolone 80 mg</strong> completed 30–60 min before infusion · <strong>Acetaminophen 650–1,000 mg</strong> · <strong>Antihistamine</strong> (e.g., diphenhydramine 50 mg)') +
+            row('From dose 6 onward', 'IV corticosteroid premedication given <em>only</em> to patients who had an infusion-related reaction (IRR) with the prior infusion.')
+        );
+        html += subsection('Monitoring & safety',
+            row('Principal risks', 'Infusion-related reactions (IRRs) · Serious infections · Neutropenia · <strong>HBV reactivation</strong> · PML (class risk of anti-CD20)') +
+            row('REGENCY safety signal', 'Serious AEs: <strong>44/136</strong> · Serious infections: <strong>23/136</strong> — somewhat more frequent than standard therapy alone') +
+            row('Baseline screening', '<strong>Hepatitis B (HBsAg, anti-HBc, anti-HBs)</strong> and <strong>latent TB</strong> before starting. Antiviral prophylaxis for HBV carriers.')
+        );
+        html += subsection('Vaccination timing (critical for anti-CD20)',
+            row('Before initiation', 'Complete all needed <strong>live and non-live</strong> vaccines before starting where feasible.') +
+            row('Non-live vaccines', 'Generally <strong>deferred until ≥ 6 months after the last anti-CD20 dose</strong> — except <strong>influenza</strong>, which may be given.') +
+            row('After vaccination', 'Delay the next treatment cycle by <strong>2–4 weeks</strong> after vaccination.')
+        );
+        html += '</div>';
+
+        // ---------- VOCLOSPORIN ----------
+        const vocRecommended = (third.short === 'Voclosporin' || third.short === 'Choice of 3');
+        const vocNotRec = (egfr !== null && egfr <= 45);
+        let vocCardClass = 'agent-detail-card';
+        if (vocNotRec) vocCardClass = 'agent-detail-card caution';
+        else if (vocRecommended) vocCardClass = 'agent-detail-card preferred';
+        html += '<div class="' + vocCardClass + '">';
+        html += '<div class="agent-header">💊 Voclosporin (Lupkynis) — calcineurin inhibitor' +
+            (vocRecommended && !vocNotRec ? ' <span class="tag tag-success">Preferred for heavy proteinuria</span>' : '') +
+            (vocNotRec ? ' <span class="tag tag-danger">Caution: eGFR ≤ 45</span>' : '') + '</div>';
+
+        html += subsection('📊 Efficacy (AURORA, 2021)',
+            efficacyGrid([
+                { value: '41%', label: 'CRR voclosporin', highlight: true },
+                { value: '23%', label: 'CRR control' },
+                { value: 'OR 2.65', label: 'Odds ratio (P<0.001)', highlight: true },
+                { value: 'Faster', label: 'Proteinuria ↓ vs MMF alone' },
+                { value: 'High', label: 'NMA certainty (2025)', highlight: true },
+                { value: 'n=357', label: 'Trial size' }
+            ]) +
+            '<p style="font-size:0.78rem; color:var(--gray-700); margin-top:0.4rem;">' +
+            'Highest-certainty evidence for proteinuria reduction among the three agents. ' +
+            '2025 NMA found voclosporin + MPAA had the <strong>largest point estimate for CRR</strong> vs MPAA alone.' +
+            '</p>'
+        );
+
+        html += subsection('Dosing',
+            row('Standard dose', '<strong>23.7 mg PO BID</strong> (three 7.9 mg capsules)') +
+            row('Administration', 'Swallow whole on an <strong>empty stomach</strong>, on a 12-hour schedule. <strong>Avoid grapefruit</strong>.') +
+            row('Backbone', 'Use with <strong>MMF + corticosteroids</strong>. <span class="tag tag-danger">Not recommended with cyclophosphamide.</span>')
+        );
+        html += subsection('Renal / hepatic adjustment',
+            row('Severe renal OR mild-moderate hepatic impairment', '<strong>Reduce to 15.8 mg BID</strong>') +
+            row('Baseline eGFR ≤ 45', '<span class="tag tag-danger">Not recommended</span> unless benefit exceeds risk')
+        );
+        html += subsection('Pre-initiation checks',
+            row('Baseline eGFR', 'Establish accurately before starting') +
+            row('Blood pressure', '<span class="tag tag-danger">Do not start if BP &gt; 165/105 mmHg</span> or hypertensive emergency')
+        );
+        html += subsection('eGFR-based dose titration (per label)',
+            '<div class="result-item"><span class="result-value">' +
+            '<strong>If eGFR declines ≥ 20% from baseline:</strong> reduce dose (23.7 → 15.8 mg BID).<br />' +
+            '<strong>If eGFR declines ≥ 30% from baseline:</strong> interrupt treatment; monitor closely.<br />' +
+            '<strong>Reassess:</strong> if eGFR recovers within 20% of baseline, may resume at reduced dose.' +
+            '</span></div>' +
+            row('Continuous', 'Recheck eGFR before every dose escalation')
+        );
+        html += subsection('Monitoring schedule',
+            row('eGFR', '<strong>Every 2 weeks × first month</strong> → <strong>every 4 weeks through first year</strong> → <strong>quarterly</strong> thereafter') +
+            row('Blood pressure', '<strong>Every 2 weeks × first month</strong>, then as clinically indicated') +
+            row('Other', 'Monitor for <strong>hyperkalemia</strong>, <strong>QT effects</strong> (avoid strong CYP3A4 interactions), and <strong>neurotoxicity</strong>')
+        );
+        html += subsection('Infection & vaccination',
+            row('General', 'Optimize immunization status before starting. Treat/control active serious infection first.') +
+            row('Non-live vaccines', 'OK; no treatment interruption needed.') +
+            row('Live vaccines', '<span class="tag tag-danger">Avoid</span> during voclosporin therapy.')
+        );
+        html += '</div>';
+
+        // ---------- SHARED INFECTION PROPHYLAXIS ----------
+        html += '<div style="margin-top:1.25rem; padding:0.75rem 1rem; background:#e3f2fd; border-left:4px solid var(--primary-light); border-radius:6px;">';
+        html += '<div style="font-weight:700; color:var(--primary); font-size:0.95rem; margin-bottom:0.4rem;">🛡️ Shared Infection Prophylaxis &amp; Vaccination (all three agents)</div>';
+        html += row('Dominant risk', 'Serious / opportunistic infection across all three — <strong>none carries a complement-inhibitor-style meningococcal boxed warning</strong>, but immunization status must be optimized before starting.') +
+            row('Active infection', '<strong>Treat and control</strong> any active serious infection before initiation.') +
+            row('Latent infection screening', 'Evaluate for <strong>latent TB</strong> and (especially before obinutuzumab) <strong>HBV</strong>, with antiviral prophylaxis for HBV carriers.') +
+            row('Vaccination timing — general', 'Complete needed vaccines <strong>before initiation</strong> where feasible.') +
+            row('Vaccination timing — obinutuzumab', 'Anti-CD20 blunts vaccine response: pre-treatment immunization critical. Defer non-live vaccines until ≥ 6 months after last dose (except influenza). Delay next cycle 2–4 weeks after vaccination.') +
+            row('Vaccination timing — belimumab', 'No treatment interruption around non-live vaccines; <strong>avoid live vaccines</strong> during therapy.') +
+            row('Glucocorticoid caveat', 'Prednisone <strong>≥ 20 mg/day</strong> blunts vaccine responses — ACR/EULAR suggest delaying non-live vaccination until dose is lower.');
+        html += '</div>';
+
+        // ---------- HEAD-TO-HEAD EFFICACY ----------
+        html += '<h4 style="font-size:0.88rem; color:var(--primary); margin:1rem 0 0.35rem 0;">📊 Head-to-Head Efficacy Summary</h4>';
+        html += '<div style="overflow-x:auto;">';
+        html += '<table class="agent-table" style="font-size:0.75rem; min-width:640px;">';
+        html += '<thead><tr>' +
+            '<th>Trial</th><th>Agent</th><th>CRR (active)</th><th>CRR (control)</th><th>Δ pp</th><th>N</th><th>NMA certainty</th>' +
+            '</tr></thead><tbody>';
+        html += '<tr' + (belRecommended ? ' class="recommended"' : '') + '>' +
+            '<td>BLISS-LN (2020)</td><td>Belimumab</td><td><strong>30%</strong></td><td>20%</td><td>+10</td><td>448</td><td><span class="tag tag-success">High</span></td></tr>';
+        html += '<tr' + (vocRecommended && !vocNotRec ? ' class="recommended"' : '') + '>' +
+            '<td>AURORA (2021)</td><td>Voclosporin</td><td><strong>41%</strong></td><td>23%</td><td>+18</td><td>357</td><td><span class="tag tag-success">High</span></td></tr>';
+        html += '<tr>' +
+            '<td>REGENCY (2025)</td><td>Obinutuzumab</td><td><strong>46.4%</strong></td><td>33.1%</td><td>+13.4</td><td>271</td><td><span class="tag tag-warning">Moderate</span></td></tr>';
+        html += '</tbody></table></div>';
+        html += '<p class="text-muted" style="margin-top:0.5rem; font-size:0.75rem;">' +
+            'Cross-trial comparisons are indirect — different patient populations, endpoint definitions, and time points ' +
+            '(wk 104 belimumab, wk 52 voclosporin, wk 76 obinutuzumab). CRR plateaus ~40–46% regardless of mechanism.' +
+            '</p>';
+
+        // ---------- QUICK REFERENCE ----------
+        html += '<h4 style="font-size:0.88rem; color:var(--primary); margin:1rem 0 0.35rem 0;">📋 Quick Reference</h4>';
+        html += '<div style="overflow-x:auto;">';
+        html += '<table class="agent-table" style="font-size:0.75rem; min-width:640px;">';
+        html += '<thead><tr>' +
+            '<th>Agent</th><th>Target</th><th>Efficacy (CRR)</th><th>LN dose schedule</th><th>Key monitoring</th><th>Infection/vaccine notes</th>' +
+            '</tr></thead><tbody>';
+        html += '<tr' + (belRecommended ? ' class="recommended"' : '') + '>' +
+            '<td><strong>Belimumab</strong></td><td>BAFF/BLyS</td>' +
+            '<td>30% vs 20%</td>' +
+            '<td>IV 10 mg/kg wk 0, 2, 4 then q4wk;<br />OR SC 400 mg weekly × 4 then 200 mg weekly</td>' +
+            '<td>Infusion / hypersensitivity reactions, infection, <strong>depression/suicidality</strong></td>' +
+            '<td>No tx interruption for non-live vaccines; <strong>avoid live vaccines</strong>; screen TB</td></tr>';
+        html += '<tr>' +
+            '<td><strong>Obinutuzumab</strong></td><td>Type II anti-CD20</td>' +
+            '<td>46.4% vs 33.1%</td>' +
+            '<td>IV 1,000 mg day 1, wk 2, 24, 26, 52 (± wk 50)</td>' +
+            '<td>IRRs, neutropenia, infection, <strong>HBV reactivation</strong>, PML</td>' +
+            '<td>Vaccinate before start; non-live vaccines ≥ 6 mo after last dose (except flu); screen <strong>HBV</strong>/TB</td></tr>';
+        html += '<tr' + (vocRecommended && !vocNotRec ? ' class="recommended"' : '') + '>' +
+            '<td><strong>Voclosporin</strong></td><td>Calcineurin inhibitor</td>' +
+            '<td>41% vs 23%</td>' +
+            '<td>23.7 mg PO BID<br />(15.8 mg BID if severe renal/hepatic impairment)</td>' +
+            '<td><strong>eGFR q2wk × 1 mo → q4wk → quarterly</strong>; BP q2wk × 1 mo; K⁺, QT</td>' +
+            '<td><span class="tag tag-danger">Not recommended eGFR ≤ 45</span>; do not start if BP &gt; 165/105</td></tr>';
+        html += '</tbody></table></div>';
+
+        html += '<p class="text-muted" style="margin-top:0.6rem; font-size:0.72rem;">' +
+            'Sources: KDIGO 2024 / ACR 2024 · FDA labels (Benlysta, Gazyva, Lupkynis) · ' +
+            'BLISS-LN (NEJM 2020) · AURORA (2021) · REGENCY (NEJM 2025) · NOBILITY (2024) · ' +
+            '2025 NMA (Izcovich, <em>Kidney Int Rep</em>).' +
+            '</p>';
+
+        return html;
+    }
+
+    function buildGanttChart(data) {
+        const cls = data.lnClass;
+        const rows = [];
+        if (cls === 'III' || cls === 'IV') {
+            rows.push({ label: 'MP + Prednisone', start: 0, end: 6, color: '#e57373' });
+            rows.push({ label: 'Prednisone ≤5 mg/day', start: 6, end: 36, color: '#f8bbd0' });
+            rows.push({ label: 'MMF (MPAA)', start: 0, end: 36, color: '#4db6ac' });
+            rows.push({ label: 'Belimumab / Voclo / Obi', start: 0, end: 24, color: '#5c6bc0' });
+            rows.push({ label: 'Hydroxychloroquine', start: 0, end: 60, color: '#9ccc65' });
+            rows.push({ label: 'RAAS blockade', start: 0, end: 60, color: '#42a5f5' });
+            rows.push({ label: 'Monitoring: q3mo UPCR', start: 0, end: 36, color: '#bdbdbd' });
+        } else if (cls === 'V') {
+            rows.push({ label: 'MP + Prednisone', start: 0, end: 6, color: '#e57373' });
+            rows.push({ label: 'Prednisone ≤5 mg/day', start: 6, end: 36, color: '#f8bbd0' });
+            rows.push({ label: 'Single IS (MPAA/CNI)', start: 0, end: 36, color: '#4db6ac' });
+            rows.push({ label: 'Hydroxychloroquine', start: 0, end: 60, color: '#9ccc65' });
+            rows.push({ label: 'RAAS blockade', start: 0, end: 60, color: '#42a5f5' });
+            rows.push({ label: 'Monitoring: q3mo UPCR', start: 0, end: 36, color: '#bdbdbd' });
+        } else if (cls === 'VI') {
+            rows.push({ label: 'CKD care / nephrology', start: 0, end: 60, color: '#90a4ae' });
+            rows.push({ label: 'Consider transplant', start: 6, end: 60, color: '#7e57c2' });
+            rows.push({ label: 'RAAS blockade', start: 0, end: 60, color: '#42a5f5' });
+        } else {
+            rows.push({ label: 'Treat extra-renal SLE', start: 0, end: 24, color: '#4db6ac' });
+            rows.push({ label: 'Hydroxychloroquine', start: 0, end: 60, color: '#9ccc65' });
+            rows.push({ label: 'Monitor proteinuria', start: 0, end: 60, color: '#bdbdbd' });
+        }
+        const rowH = 26, padTop = 34, padLeft = 200, padRight = 20, monthW = 14, totalMonths = 60;
+        const width = padLeft + totalMonths * monthW + padRight;
+        const height = padTop + rows.length * rowH + 20;
+        let svg = '<svg width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">';
+        svg += '<rect x="0" y="0" width="' + width + '" height="' + height + '" fill="#fff"/>';
+        for (let m = 0; m <= totalMonths; m += 6) {
+            const x = padLeft + m * monthW;
+            svg += '<line x1="' + x + '" y1="' + (padTop - 6) + '" x2="' + x + '" y2="' + (height - 10) + '" stroke="#e0e0e0"/>';
+            svg += '<text x="' + x + '" y="' + (padTop - 12) + '" font-size="10" fill="#555" text-anchor="middle">' + m + 'm</text>';
+        }
+        rows.forEach((r, i) => {
+            const y = padTop + i * rowH;
+            const x1 = padLeft + r.start * monthW;
+            const x2 = padLeft + r.end * monthW;
+            svg += '<text x="' + (padLeft - 8) + '" y="' + (y + 15) + '" font-size="11" fill="#333" text-anchor="end">' + esc(r.label) + '</text>';
+            svg += '<rect x="' + x1 + '" y="' + (y + 4) + '" width="' + (x2 - x1) + '" height="16" rx="3" fill="' + r.color + '" opacity="0.9"/>';
+        });
+        [3, 6, 12, 24].forEach(m => {
+            const x = padLeft + m * monthW;
+            svg += '<line x1="' + x + '" y1="' + (padTop - 6) + '" x2="' + x + '" y2="' + (height - 10) + '" stroke="#e91e63" stroke-width="1" stroke-dasharray="3,3"/>';
+            svg += '<text x="' + x + '" y="' + (padTop - 22) + '" font-size="9" fill="#c2185b" text-anchor="middle">M' + m + '</text>';
+        });
+        svg += '</svg>';
+        let html = '<div class="gantt-wrap">' + svg + '</div>';
+        html += '<p class="text-muted" style="margin-top:0.5rem;">Milestones: M3 ≥25% ↓ UPCR · M6 ≥50% ↓ UPCR, GC ≤5 mg/day · M12 UPCR &lt;700 mg/g · M24 sustained response.</p>';
+        return html;
+    }
+
+    function buildInvestigationalPanel(data) {
+        const items = [
+            { name: 'Rituximab + Belimumab sequencing (BEAT-LUPUS)', target: 'Type I anti-CD20 → BAFF', status: 'Off-label; refractory', note: 'Rituximab followed by belimumab delayed B-cell repopulation.' },
+            { name: 'Daratumumab (anti-CD38)', target: 'Plasma cells', status: 'Phase 2', note: 'Addresses CD20-negative plasma cells.' },
+            { name: 'CD19 CAR-T cell therapy', target: 'B cells (deep depletion)', status: 'Early phase', note: 'Drug-free remission in refractory cases.' },
+            { name: 'BTK, complement, proteasome inhibitors', target: 'Various', status: 'Phase 2', note: 'Emerging targets.' }
+        ];
+        if (data.extraRenal) items.push({ name: 'Anifrolumab', target: 'Type I IFN receptor', status: 'Approved SLE, NOT LN', note: 'TULIP-LN missed primary endpoint.' });
+        let html = '<p class="text-muted" style="margin-bottom:0.6rem;">CRR plateaus ~40–46% regardless of mechanism.</p>';
+        items.forEach(it => {
+            html += '<div class="result-item"><span class="result-label">' + esc(it.name) + '</span><span class="result-value"><strong>Target:</strong> ' + esc(it.target) + ' · <strong>Status:</strong> ' + esc(it.status) + '<br /><em>' + esc(it.note) + '</em></span></div>';
+        });
+        return html;
+    }
+
+    // ============================================================
+    //  CHART BUILDER
+    // ============================================================
+    function buildMultiAxisChart(config) {
+        const {
+            months, series, title, leftLabel, right1Label, right2Label,
+            leftMin, leftMax, right1Min, right1Max, right2Min, right2Max,
+            leftTicks, right1Ticks, right2Ticks, height = 340, targetBands = []
+        } = config;
+
+        const padL = 70, padR = (right2Label ? 130 : (right1Label ? 70 : 20));
+        const padT = 30, padB = 50;
+        const width = 780;
+        const plotW = width - padL - padR;
+        const plotH = height - padT - padB;
+
+        const xScale = m => padL + (m / 24) * plotW;
+        const yScale = (v, min, max) => padT + plotH - ((v - min) / (max - min)) * plotH;
+        const range = (axis) => {
+            if (axis === 'left') return [leftMin, leftMax];
+            if (axis === 'right1') return [right1Min, right1Max];
+            return [right2Min, right2Max];
+        };
+
+        let svg = '<svg width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height +
+            '" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" style="max-width:100%;">';
+        svg += '<rect x="0" y="0" width="' + width + '" height="' + height + '" fill="#fff"/>';
+        svg += '<text x="' + (width/2) + '" y="18" font-size="13" font-weight="700" fill="#1a237e" text-anchor="middle">' + esc(title) + '</text>';
+
+        targetBands.forEach(b => {
+            const y1 = yScale(b.max, leftMin, leftMax);
+            const y2 = yScale(b.min, leftMin, leftMax);
+            svg += '<rect x="' + padL + '" y="' + y1 + '" width="' + plotW + '" height="' + Math.max(1, y2 - y1) + '" fill="' + (b.color || '#e8f5e9') + '" opacity="0.5"/>';
+        });
+
+        for (let i = 0; i <= 5; i++) {
+            const v = leftMin + (leftMax - leftMin) * i / 5;
+            const y = yScale(v, leftMin, leftMax);
+            svg += '<line x1="' + padL + '" y1="' + y + '" x2="' + (padL + plotW) + '" y2="' + y + '" stroke="#e9ecef" stroke-width="1"/>';
+            svg += '<text x="' + (padL - 6) + '" y="' + (y + 3) + '" font-size="10" fill="#495057" text-anchor="end">' + (leftTicks ? leftTicks[i] : v.toFixed(0)) + '</text>';
+        }
+
+        svg += '<line x1="' + padL + '" y1="' + (padT + plotH) + '" x2="' + (padL + plotW) + '" y2="' + (padT + plotH) + '" stroke="#343a40" stroke-width="1.5"/>';
+        months.forEach(m => {
+            const x = xScale(m);
+            svg += '<line x1="' + x + '" y1="' + (padT + plotH) + '" x2="' + x + '" y2="' + (padT + plotH + 4) + '" stroke="#343a40"/>';
+            svg += '<text x="' + x + '" y="' + (padT + plotH + 16) + '" font-size="10" fill="#495057" text-anchor="middle">' + m + '</text>';
+        });
+        svg += '<text x="' + (padL + plotW/2) + '" y="' + (height - 8) + '" font-size="11" fill="#343a40" text-anchor="middle" font-weight="600">Months since treatment start</text>';
+        svg += '<text x="14" y="' + (padT + plotH/2) + '" font-size="11" fill="#343a40" text-anchor="middle" font-weight="600" transform="rotate(-90 14 ' + (padT + plotH/2) + ')">' + esc(leftLabel || '') + '</text>';
+
+        if (right1Label) {
+            const rx1 = padL + plotW + 40;
+            svg += '<line x1="' + rx1 + '" y1="' + padT + '" x2="' + rx1 + '" y2="' + (padT + plotH) + '" stroke="#343a40" stroke-width="1.5"/>';
+            for (let i = 0; i <= 5; i++) {
+                const v = right1Min + (right1Max - right1Min) * i / 5;
+                const y = yScale(v, right1Min, right1Max);
+                svg += '<text x="' + (rx1 + 4) + '" y="' + (y + 3) + '" font-size="10" fill="#495057" text-anchor="start">' + (right1Ticks ? right1Ticks[i] : v.toFixed(0)) + '</text>';
+            }
+            svg += '<text x="' + (rx1 + 28) + '" y="' + (padT + plotH/2) + '" font-size="11" fill="#343a40" text-anchor="middle" font-weight="600" transform="rotate(90 ' + (rx1 + 28) + ' ' + (padT + plotH/2) + ')">' + esc(right1Label) + '</text>';
+        }
+        if (right2Label) {
+            const rx2 = padL + plotW + 100;
+            svg += '<line x1="' + rx2 + '" y1="' + padT + '" x2="' + rx2 + '" y2="' + (padT + plotH) + '" stroke="#343a40" stroke-width="1.5"/>';
+            for (let i = 0; i <= 5; i++) {
+                const v = right2Min + (right2Max - right2Min) * i / 5;
+                const y = yScale(v, right2Min, right2Max);
+                svg += '<text x="' + (rx2 + 4) + '" y="' + (y + 3) + '" font-size="10" fill="#495057" text-anchor="start">' + (right2Ticks ? right2Ticks[i] : v.toFixed(1)) + '</text>';
+            }
+            svg += '<text x="' + (rx2 + 28) + '" y="' + (padT + plotH/2) + '" font-size="11" fill="#343a40" text-anchor="middle" font-weight="600" transform="rotate(90 ' + (rx2 + 28) + ' ' + (padT + plotH/2) + ')">' + esc(right2Label) + '</text>';
+        }
+
+        series.forEach(s => {
+            const [min, max] = range(s.axis);
+            if (s.band && s.band.lower && s.band.upper) {
+                let bandPath = '';
+                let started = false;
+                s.band.upper.forEach((v, i) => {
+                    if (v === null) { started = false; return; }
+                    const x = xScale(months[i]); const y = yScale(v, min, max);
+                    bandPath += (started ? 'L' : 'M') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+                    started = true;
+                });
+                const lowerRev = s.band.lower.slice().reverse();
+                const monthsRev = months.slice().reverse();
+                lowerRev.forEach((v, i) => {
+                    if (v === null) return;
+                    const x = xScale(monthsRev[i]); const y = yScale(v, min, max);
+                    bandPath += 'L' + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+                });
+                bandPath += 'Z';
+                svg += '<path d="' + bandPath + '" fill="' + s.color + '" fill-opacity="0.12" stroke="none"/>';
+            }
+            if (s.expected) {
+                let expPath = '';
+                let started = false;
+                s.expected.forEach((v, i) => {
+                    if (v === null) { started = false; return; }
+                    const x = xScale(months[i]); const y = yScale(v, min, max);
+                    expPath += (started ? 'L' : 'M') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+                    started = true;
+                });
+                if (expPath) svg += '<path d="' + expPath + '" fill="none" stroke="' + (s.expectedColor || s.color) + '" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.55"/>';
+            }
+            if (s.trendline && s.trendline.slope !== null) {
+                const x1 = months[0], x2 = months[months.length - 1];
+                const y1 = s.trendline.slope * x1 + s.trendline.intercept;
+                const y2 = s.trendline.slope * x2 + s.trendline.intercept;
+                svg += '<line x1="' + xScale(x1) + '" y1="' + yScale(y1, min, max) + '" x2="' + xScale(x2) + '" y2="' + yScale(y2, min, max) +
+                    '" stroke="' + (s.trendColor || '#000') + '" stroke-width="1.2" stroke-dasharray="2,3" opacity="0.7"/>';
+            }
+            let path = '', started = false;
+            s.data.forEach((v, i) => {
+                if (v === null) { started = false; return; }
+                const x = xScale(months[i]); const y = yScale(v, min, max);
+                path += (started ? 'L' : 'M') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+                started = true;
+            });
+            if (path) svg += '<path d="' + path + '" fill="none" stroke="' + s.color + '" stroke-width="' + (s.width || 2) + '"' + (s.dashed ? ' stroke-dasharray="5,4"' : '') + '/>';
+            s.data.forEach((v, i) => {
+                if (v === null) return;
+                const x = xScale(months[i]); const y = yScale(v, min, max);
+                svg += '<circle cx="' + x + '" cy="' + y + '" r="2.8" fill="#fff" stroke="' + s.color + '" stroke-width="1.8"/>';
+            });
+        });
+        svg += '</svg>';
+        return svg;
+    }
+
+    function buildChart1(data, renalUS, expectedUS, derived) {
+        const bands = addConfidenceBands(expectedUS);
+
+        const egfrDisp = renalUS.egfr || [];
+        const egfrExp = expectedUS.egfr;
+        const egfrBand = { lower: bands.egfr.lower, upper: bands.egfr.upper };
+        const egfrTrend = { ...derived.trends.egfr };
+
+        const upcrDisp = renalUS.proteinuria || [];
+        const upcrExp = expectedUS.upcr;
+        const uacrDisp = (renalUS.uacr || []).map(v => v === null ? null : fromUS(v, 'uacr'));
+
+        const c3Disp = (renalUS.c3 || []).map(v => v === null ? null : fromUS(v, 'c3'));
+        const c4Disp = (renalUS.c4 || []).map(v => v === null ? null : fromUS(v, 'c4'));
+        const c3Exp = expectedUS.c3.map(v => fromUS(v, 'c3'));
+        const c4Exp = expectedUS.c4.map(v => fromUS(v, 'c4'));
+        const c3Band = { lower: bands.c3.lower.map(v => fromUS(v, 'c3')), upper: bands.c3.upper.map(v => fromUS(v, 'c3')) };
+        const c3Trend = { ...derived.trends.c3 };
+        const c4Trend = { ...derived.trends.c4 };
+        if (c3Trend.slope !== null) { c3Trend.slope = fromUS(c3Trend.slope, 'c3'); c3Trend.intercept = fromUS(c3Trend.intercept, 'c3'); }
+        if (c4Trend.slope !== null) { c4Trend.slope = fromUS(c4Trend.slope, 'c4'); c4Trend.intercept = fromUS(c4Trend.intercept, 'c4'); }
+
+        // eGFR axis: 0–120 mL/min always
+        const egfrMax = 120;
+        const egfrTicks = ['0','24','48','72','96','120'];
+        const egfrTargetMin = 90;
+        const egfrTargetMax = 120;
+
+        // uACR axis:
+        //   US: 100 – 6000 mg/g
+        //   SI: 10  – 600  mg/mmol
+        // Both with 6 evenly spaced ticks.
+        const uacrMin = unitSystem === 'SI' ? 10   : 100;
+        const uacrMax = unitSystem === 'SI' ? 600  : 6000;
+        const uacrTicks = unitSystem === 'SI'
+            ? ['10','128','246','364','482','600']
+            : ['100','1280','2460','3640','4820','6000'];
+
+        const c3Max = unitSystem === 'SI' ? 1.6 : 160;
+        const c3Ticks = unitSystem === 'SI' ? ['0','0.32','0.64','0.96','1.28','1.6'] : ['0','32','64','96','128','160'];
+        const c4Max = unitSystem === 'SI' ? 0.40 : 40;
+        const c4Ticks = unitSystem === 'SI' ? ['0','0.08','0.16','0.24','0.32','0.40'] : ['0','8','16','24','32','40'];
+        const c3TargetMin = unitSystem === 'SI' ? 0.9 : 90;
+
+        const maxUPCR = Math.max(5, Math.ceil((Math.max.apply(null, upcrDisp.filter(v => v !== null).concat([1])) || 1) * 1.2));
+
+        const mainChart = buildMultiAxisChart({
+            months: MONTHS, title: 'Chart 1A — eGFR, Proteinuria, uACR',
+            leftLabel: 'eGFR (mL/min)',
+            right1Label: 'Proteinuria (g/d)',
+            right2Label: 'uACR (' + unitLabel('uacr') + ')',
+            leftMin: 0, leftMax: egfrMax,
+            right1Min: 0, right1Max: maxUPCR,
+            right2Min: uacrMin, right2Max: uacrMax,
+            leftTicks: egfrTicks,
+            right1Ticks: ['0', (maxUPCR*0.2).toFixed(1), (maxUPCR*0.4).toFixed(1), (maxUPCR*0.6).toFixed(1), (maxUPCR*0.8).toFixed(1), maxUPCR.toFixed(1)],
+            right2Ticks: uacrTicks,
+            height: 360,
+            targetBands: [{ min: egfrTargetMin, max: egfrTargetMax, color: '#e3f2fd' }],
+            series: [
+                { data: egfrDisp, axis: 'left', color: '#1a237e', width: 2.5,
+                  expected: egfrExp, expectedColor: '#9fa8da',
+                  band: egfrBand, trendline: egfrTrend, trendColor: '#1a237e' },
+                { data: upcrDisp, axis: 'right1', color: '#c62828', width: 2.5,
+                  expected: upcrExp, expectedColor: '#ef9a9a',
+                  trendline: derived.trends.proteinuria, trendColor: '#c62828' },
+                { data: uacrDisp, axis: 'right2', color: '#f57f17', width: 2, dashed: true,
+                  trendline: derived.trends.uacr, trendColor: '#f57f17' }
+            ]
+        });
+
+        const c3c4Chart = buildMultiAxisChart({
+            months: MONTHS, title: 'Chart 1B — Complement C3 & C4',
+            leftLabel: 'C3 (' + unitLabel('c3') + ')',
+            right1Label: 'C4 (' + unitLabel('c4') + ')',
+            leftMin: 0, leftMax: c3Max, right1Min: 0, right1Max: c4Max,
+            leftTicks: c3Ticks, right1Ticks: c4Ticks,
+            height: 240,
+            targetBands: [{ min: c3TargetMin, max: c3Max, color: '#e8f5e9' }],
+            series: [
+                { data: c3Disp, axis: 'left', color: '#00897b', width: 2.5,
+                  expected: c3Exp, expectedColor: '#80cbc4',
+                  band: c3Band, trendline: c3Trend, trendColor: '#00897b' },
+                { data: c4Disp, axis: 'right1', color: '#7b1fa2', width: 2.5,
+                  expected: c4Exp, expectedColor: '#ce93d8',
+                  trendline: c4Trend, trendColor: '#7b1fa2' }
+            ]
+        });
+
+        let html = '<div class="chart-wrap">' + mainChart + '</div>';
+        html += '<div class="chart-legend">' +
+            '<span><span class="swatch" style="background:#1a237e;"></span> eGFR (mL/min)</span>' +
+            '<span><span class="swatch" style="background:#c62828;"></span> Proteinuria (g/d)</span>' +
+            '<span><span class="swatch-dashed" style="border-color:#f57f17;"></span> uACR (' + unitLabel('uacr') + ')</span>' +
+            '<span><span class="swatch-dashed" style="border-color:#9fa8da;"></span> eGFR expected</span>' +
+            '<span><span class="swatch-band" style="background:#1a237e;"></span> ±1 SD band</span>' +
+            '</div>';
+        html += '<div class="chart-wrap" style="margin-top:0.5rem;">' + c3c4Chart + '</div>';
+        html += '<p class="text-muted" style="margin-top:0.5rem;">eGFR shown in <strong>mL/min</strong> in both systems. ' +
+            'uACR axis: <strong>' +
+            (unitSystem === 'SI' ? '10–600 mg/mmol (SI)' : '100–6000 mg/g (US)') +
+            '</strong>. ' +
+            (unitSystem === 'SI' ? '' : 'Values below 100 mg/g are off-scale below the axis floor.') +
+            '</p>';
+        return html;
+    }
+
+    function buildChart2(data, safetyUS, expectedUS, derived) {
+        const bands = addConfidenceBands(expectedUS);
+
+        const hbDisp = (safetyUS.hb || []).map(v => v === null ? null : fromUS(v, 'hb'));
+        const wbcDisp = safetyUS.wbc || [];
+        const pltDisp = safetyUS.plt || [];
+        const hbExp = expectedUS.hb.map(v => fromUS(v, 'hb'));
+
+        const hbMax = unitSystem === 'SI' ? 160 : 16;
+        const hbMin = unitSystem === 'SI' ? 60 : 6;
+        const hbTicks = unitSystem === 'SI' ? ['60','80','100','120','140','160'] : ['6','8','10','12','14','16'];
+        const hbTargetMin = unitSystem === 'SI' ? 120 : 12;
+        const hbTargetMax = unitSystem === 'SI' ? 160 : 16;
+        const hbCriticalMax = unitSystem === 'SI' ? 80 : 8;
+
+        const hbChart = buildMultiAxisChart({
+            months: MONTHS, title: 'Chart 2A — Hemoglobin',
+            leftLabel: 'Hb (' + unitLabel('hb') + ')',
+            leftMin: hbMin, leftMax: hbMax, leftTicks: hbTicks,
+            height: 220,
+            targetBands: [{ min: hbTargetMin, max: hbTargetMax, color: '#e8f5e9' }, { min: hbMin, max: hbCriticalMax, color: '#ffebee' }],
+            series: [
+                { data: hbDisp, axis: 'left', color: '#c62828', width: 2.5,
+                  expected: hbExp, expectedColor: '#ef9a9a',
+                  band: { lower: bands.hb.lower.map(v => fromUS(v, 'hb')), upper: bands.hb.upper.map(v => fromUS(v, 'hb')) },
+                  trendline: derived.trends.hb, trendColor: '#c62828' }
+            ]
+        });
+        const wbcChart = buildMultiAxisChart({
+            months: MONTHS, title: 'Chart 2B — WBC',
+            leftLabel: 'WBC (' + unitLabel('wbc') + ')',
+            leftMin: 0, leftMax: 12, leftTicks: ['0','2.4','4.8','7.2','9.6','12'],
+            height: 220,
+            targetBands: [{ min: 4, max: 11, color: '#e8f5e9' }, { min: 0, max: 2, color: '#ffebee' }],
+            series: [
+                { data: wbcDisp, axis: 'left', color: '#283593', width: 2.5,
+                  expected: expectedUS.wbc, expectedColor: '#9fa8da',
+                  band: bands.wbc, trendline: derived.trends.wbc, trendColor: '#283593' }
+            ]
+        });
+        const pltChart = buildMultiAxisChart({
+            months: MONTHS, title: 'Chart 2C — Platelets',
+            leftLabel: 'Platelets (' + unitLabel('plt') + ')',
+            leftMin: 0, leftMax: 400, leftTicks: ['0','80','160','240','320','400'],
+            height: 220,
+            targetBands: [{ min: 150, max: 400, color: '#e8f5e9' }, { min: 0, max: 50, color: '#ffebee' }],
+            series: [
+                { data: pltDisp, axis: 'left', color: '#6a1b9a', width: 2.5,
+                  expected: expectedUS.plt, expectedColor: '#ce93d8',
+                  band: bands.plt, trendline: derived.trends.plt, trendColor: '#6a1b9a' }
+            ]
+        });
+        let html = '<div class="chart-wrap">' + hbChart + '</div>';
+        html += '<div class="chart-wrap" style="margin-top:0.5rem;">' + wbcChart + '</div>';
+        html += '<div class="chart-wrap" style="margin-top:0.5rem;">' + pltChart + '</div>';
+        html += '<p class="text-muted" style="margin-top:0.5rem;">Watch for Hb &lt; ' + (unitSystem === 'SI' ? '80 g/L' : '8 g/dL') +
+            ', WBC &lt; 3 ×10⁹/L, Plt &lt; 100 ×10⁹/L.</p>';
+        return html;
+    }
+
+    function buildChart3(data, safetyUS, expectedUS, derived) {
+        const bands = addConfidenceBands(expectedUS);
+
+        const altDisp = (safetyUS.alt || []).map(v => v === null ? null : fromUS(v, 'alt'));
+        const astDisp = (safetyUS.ast || []).map(v => v === null ? null : fromUS(v, 'ast'));
+        const tbilDisp = (safetyUS.tbil || []).map(v => v === null ? null : fromUS(v, 'tbil'));
+        const altExp = expectedUS.alt.map(v => fromUS(v, 'alt'));
+        const tbilExp = expectedUS.tbil.map(v => fromUS(v, 'tbil'));
+
+        const altMax = unitSystem === 'SI' ? 2.0 : 120;
+        const altTicks = unitSystem === 'SI' ? ['0','0.4','0.8','1.2','1.6','2.0'] : ['0','24','48','72','96','120'];
+        const altTargetMax = unitSystem === 'SI' ? 0.67 : 40;
+        const altCriticalMin = unitSystem === 'SI' ? 1.67 : 100;
+
+        const tbilMax = unitSystem === 'SI' ? 50 : 3;
+        const tbilTicks = unitSystem === 'SI' ? ['0','10','20','30','40','50'] : ['0','0.6','1.2','1.8','2.4','3'];
+        const tbilTargetMin = unitSystem === 'SI' ? 1.7 : 0.1;
+        const tbilTargetMax = unitSystem === 'SI' ? 20 : 1.2;
+        const tbilCriticalMin = unitSystem === 'SI' ? 34 : 2;
+
+        const altChart = buildMultiAxisChart({
+            months: MONTHS, title: 'Chart 3A — ALT & AST',
+            leftLabel: 'ALT (' + unitLabel('alt') + ')',
+            right1Label: 'AST (' + unitLabel('ast') + ')',
+            leftMin: 0, leftMax: altMax, right1Min: 0, right1Max: altMax,
+            leftTicks: altTicks, right1Ticks: altTicks,
+            height: 240,
+            targetBands: [{ min: 0, max: altTargetMax, color: '#e8f5e9' }, { min: altCriticalMin, max: altMax, color: '#ffebee' }],
+            series: [
+                { data: altDisp, axis: 'left', color: '#ef6c00', width: 2.5,
+                  expected: altExp, expectedColor: '#ffcc80',
+                  band: { lower: bands.alt.lower.map(v => fromUS(v, 'alt')), upper: bands.alt.upper.map(v => fromUS(v, 'alt')) },
+                  trendline: derived.trends.alt, trendColor: '#ef6c00' },
+                { data: astDisp, axis: 'right1', color: '#5d4037', width: 2.5, dashed: true,
+                  trendline: derived.trends.ast, trendColor: '#5d4037' }
+            ]
+        });
+        const tbilChart = buildMultiAxisChart({
+            months: MONTHS, title: 'Chart 3B — Total Bilirubin',
+            leftLabel: 'Total bilirubin (' + unitLabel('tbil') + ')',
+            leftMin: 0, leftMax: tbilMax, leftTicks: tbilTicks,
+            height: 220,
+            targetBands: [{ min: tbilTargetMin, max: tbilTargetMax, color: '#e8f5e9' }, { min: tbilCriticalMin, max: tbilMax, color: '#ffebee' }],
+            series: [
+                { data: tbilDisp, axis: 'left', color: '#33691e', width: 2.5,
+                  expected: tbilExp, expectedColor: '#aed581',
+                  band: { lower: bands.tbil.lower.map(v => fromUS(v, 'tbil')), upper: bands.tbil.upper.map(v => fromUS(v, 'tbil')) },
+                  trendline: derived.trends.tbil, trendColor: '#33691e' }
+            ]
+        });
+        let html = '<div class="chart-wrap">' + altChart + '</div>';
+        html += '<div class="chart-wrap" style="margin-top:0.5rem;">' + tbilChart + '</div>';
+        html += '<p class="text-muted" style="margin-top:0.5rem;">Watch for ALT/AST &gt; 3× ULN or bilirubin &gt; ' +
+            (unitSystem === 'SI' ? '34 µmol/L' : '2 mg/dL') + '.</p>';
+        return html;
+    }
+
+    function buildMetricsPanel(derived, renalUS, safetyUS) {
+        let html = '';
+
+        html += '<h4 style="font-size:0.9rem; color:var(--primary); margin-bottom:0.3rem;">📉 eGFR Slope (from entered data)</h4>';
+        if (derived.egfrSlopePerYear !== null) {
+            const slope = derived.egfrSlopePerYear;
+            const cls = slope > -1 ? 'tag-success' : slope > -5 ? 'tag-warning' : 'tag-danger';
+            const label = slope > -1 ? 'Stable' : slope > -5 ? 'Slow decline' : 'Rapid decline';
+            html += '<div class="result-item"><span class="result-label">Slope</span><span class="result-value">' +
+                slope.toFixed(2) + ' mL/min/year <span class="tag ' + cls + '">' + label + '</span></span></div>';
+            html += '<div class="result-item"><span class="result-label">Linear regression</span><span class="result-value">' +
+                'R² = ' + derived.egfrR2.toFixed(3) + ' · n = ' + derived.egfrN + '</span></div>';
+            html += '<div class="result-item"><span class="result-label">KDIGO reference</span><span class="result-value">' +
+                'Normal aging: −0.5 to −1.0 mL/min/year · Rapid: < −5</span></div>';
+        } else {
+            html += '<div class="result-item"><span class="result-value text-muted">Need ≥ 2 eGFR values.</span></div>';
+        }
+
+        html += '<h4 style="font-size:0.9rem; color:var(--primary); margin:0.9rem 0 0.3rem;">⏱️ Time to Response</h4>';
+        const ttr = [
+            { label: 'First UPCR < 0.7 g/g', value: derived.firstUPCR_lt_0_7 },
+            { label: 'First UPCR < 0.5 g/g', value: derived.firstUPCR_lt_0_5 },
+            { label: 'First uACR < ' + (unitSystem === 'SI' ? '3.4 mg/mmol' : '30 mg/g'), value: derived.firstUACR_lt_30 },
+            { label: 'First C3 > ' + (unitSystem === 'SI' ? '0.9 g/L' : '90 mg/dL'), value: derived.firstC3_gt_90 },
+            { label: 'First C4 > ' + (unitSystem === 'SI' ? '0.16 g/L' : '16 mg/dL'), value: derived.firstC4_gt_16 }
+        ];
+        ttr.forEach(t => {
+            const v = (t.value === null || t.value === undefined) ? 'Not yet reached' : (t.value + ' months');
+            const cls = (t.value === null) ? 'text-muted' : '';
+            html += '<div class="result-item"><span class="result-label">' + esc(t.label) + '</span><span class="result-value ' + cls + '">' + esc(v) + '</span></div>';
+        });
+
+        html += '<h4 style="font-size:0.9rem; color:var(--primary); margin:0.9rem 0 0.3rem;">📈 Trendlines (slope/mo, R²)</h4>';
+        const allTrends = [
+            ['egfr','eGFR'], ['proteinuria','Proteinuria'], ['uacr','uACR'], ['c3','C3'], ['c4','C4'],
+            ['hb','Hb'], ['wbc','WBC'], ['plt','Platelets'], ['alt','ALT'], ['ast','AST'], ['tbil','Bilirubin']
+        ];
+        allTrends.forEach(([k, label]) => {
+            const t = derived.trends[k];
+            if (!t || t.slope === null) return;
+            const slope = t.slope;
+            const cls = slope > 0.001 ? 'slope-pos' : slope < -0.001 ? 'slope-neg' : 'slope-flat';
+            html += '<div class="result-item"><span class="result-label">' + esc(label) + '</span><span class="result-value">' +
+                '<span class="' + cls + '">' + (slope > 0 ? '+' : '') + slope.toFixed(4) + '/mo</span> · ' +
+                'R² = ' + t.r2.toFixed(3) + ' · n = ' + t.n + '</span></div>';
+        });
+
+        return html;
+    }
+
+    // ============================================================
+    //  PREFILL / CLEAR
+    // ============================================================
+    function fillTableUS(tableId, rowsUS) {
+        const table = $(tableId);
+        if (!table) return;
+        Object.keys(rowsUS).forEach(key => {
+            const tr = table.querySelector('tr[data-row="' + key + '"]');
+            if (!tr) return;
+            tr.querySelectorAll('input[data-month]').forEach((inp, i) => {
+                const usVal = rowsUS[key][i];
+                if (usVal === null || usVal === undefined) { inp.value = ''; return; }
+                const disp = fromUS(usVal, key);
+                inp.value = disp.toFixed(2).replace(/\.?0+$/, '');
+            });
+        });
+    }
+
+    function clearTable(tableId) {
+        const table = $(tableId);
+        if (!table) return;
+        table.querySelectorAll('input[data-month]').forEach(inp => inp.value = '');
+    }
+
+    function prefillRenalExpected() {
+        const dataUS = snapshotInputsUS();
+        const exp = expectedTrajectory(dataUS);
+        fillTableUS('renalTable', {
+            egfr: exp.egfr, proteinuria: exp.upcr, uacr: exp.uacr, c3: exp.c3, c4: exp.c4
+        });
+        runAnalysis();
+    }
+    function prefillSafetyExpected() {
+        const dataUS = snapshotInputsUS();
+        const exp = expectedTrajectory(dataUS);
+        fillTableUS('safetyTable', { hb: exp.hb, wbc: exp.wbc, plt: exp.plt, alt: exp.alt, ast: exp.ast, tbil: exp.tbil });
+        runAnalysis();
+    }
+
+    // ============================================================
+    //  CSV
+    // ============================================================
+    function tableToRowsCanonical(tableId) {
+        const table = $(tableId);
+        const rows = [];
+        table.querySelectorAll('tbody tr[data-row]').forEach(tr => {
+            const key = tr.getAttribute('data-row');
+            const vals = [];
+            tr.querySelectorAll('input[data-month]').forEach(inp => {
+                const raw = parseFloat(inp.value);
+                if (isNaN(raw)) { vals.push(''); return; }
+                vals.push(String(Number(toUS(raw, key).toFixed(6))));
+            });
+            rows.push({ key, vals });
+        });
+        return rows;
+    }
+
+    function csvEscape(v) {
+        if (v === null || v === undefined) return '';
+        const s = String(v);
+        if (s.indexOf(',') !== -1 || s.indexOf('"') !== -1 || s.indexOf('\n') !== -1)
+            return '"' + s.replace(/"/g, '""') + '"';
+        return s;
+    }
+
+    function buildCSV() {
+        const lines = [];
+        lines.push('# Lupus Nephritis CDS v6.4 — Data Export');
+        lines.push('# Patient: ' + (getVal('patientId') || 'Unknown'));
+        lines.push('# Date: ' + new Date().toISOString());
+        lines.push('# Canonical units: US (mg/g uACR, mg/dL sCr, mg/dL C3/C4, g/dL Hb, U/L ALT/AST, mg/dL bili). eGFR in mL/min.');
+        lines.push('');
+        lines.push('# Table 1 — Renal & Serologic');
+        lines.push('table,row,' + MONTHS.join(','));
+        tableToRowsCanonical('renalTable').forEach(r => {
+            lines.push('renal,' + csvEscape(r.key) + ',' + r.vals.map(csvEscape).join(','));
+        });
+        lines.push('');
+        lines.push('# Table 2 — CBC & Hepatic Safety');
+        lines.push('table,row,' + MONTHS.join(','));
+        tableToRowsCanonical('safetyTable').forEach(r => {
+            lines.push('safety,' + csvEscape(r.key) + ',' + r.vals.map(csvEscape).join(','));
+        });
+        return lines.join('\n');
+    }
+
+    function buildSingleTableCSV(tableId, tableName) {
+        const lines = [];
+        lines.push('table,row,' + MONTHS.join(','));
+        tableToRowsCanonical(tableId).forEach(r => {
+            lines.push(tableName + ',' + csvEscape(r.key) + ',' + r.vals.map(csvEscape).join(','));
+        });
+        return lines.join('\n');
+    }
+
+    function downloadFile(filename, content) {
+        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    function parseCSV(text) {
+        const lines = text.split(/\r?\n/).filter(l => l.trim() !== '' && !l.trim().startsWith('#'));
+        const rows = [];
+        lines.forEach(line => {
+            const out = [];
+            let cur = '', inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const c = line[i];
+                if (inQuotes) {
+                    if (c === '"') {
+                        if (line[i+1] === '"') { cur += '"'; i++; }
+                        else inQuotes = false;
+                    } else cur += c;
+                } else {
+                    if (c === '"') inQuotes = true;
+                    else if (c === ',') { out.push(cur); cur = ''; }
+                    else cur += c;
+                }
+            }
+            out.push(cur);
+            rows.push(out);
+        });
+        return rows;
+    }
+
+    function importCSV(text) {
+        const rows = parseCSV(text);
+        if (!rows.length) return;
+        const headerIdx = rows.findIndex(r => (r[0] || '').trim().toLowerCase() === 'table');
+        if (headerIdx === -1) { alert('CSV must contain a header row: table,row,0,3,6,...'); return; }
+        const header = rows[headerIdx];
+        const monthCols = header.slice(2).map(s => parseInt(s.trim(), 10));
+        const monthIdx = {};
+        monthCols.forEach((m, i) => { monthIdx[m] = i + 2; });
+
+        let count = 0;
+        rows.slice(headerIdx + 1).forEach(r => {
+            const tableName = (r[0] || '').trim().toLowerCase();
+            const rowKey = (r[1] || '').trim();
+            if (!tableName || !rowKey) return;
+            const tableId = tableName === 'renal' ? 'renalTable' : (tableName === 'safety' ? 'safetyTable' : null);
+            if (!tableId) return;
+            const table = $(tableId);
+            const tr = table.querySelector('tr[data-row="' + rowKey + '"]');
+            if (!tr) return;
+            tr.querySelectorAll('input[data-month]').forEach(inp => {
+                const m = parseInt(inp.getAttribute('data-month'), 10);
+                const col = monthIdx[m];
+                if (col === undefined) return;
+                const v = (r[col] || '').trim();
+                if (v === '') { inp.value = ''; return; }
+                const usVal = parseFloat(v);
+                if (isNaN(usVal)) { inp.value = ''; return; }
+                const disp = fromUS(usVal, rowKey);
+                inp.value = disp.toFixed(3).replace(/\.?0+$/, '');
+            });
+            count++;
+        });
+        if (count) runAnalysis();
+    }
+
+    // ============================================================
+    //  MAIN
+    // ============================================================
+    function runAnalysis() {
+        const dataUS = snapshotInputsUS();
+        $('bsaDisplay').value = dataUS.bsa ? dataUS.bsa.toFixed(2) + ' m²' : '—';
+
+        const screening = screenForLN(dataUS);
+        const treatment = selectTreatment(dataUS);
+        const responseText = assessResponse(dataUS, dataUS.months);
+        const renalUS = readTableUS('renalTable');
+        const safetyUS = readTableUS('safetyTable');
+        const expectedUS = expectedTrajectory(dataUS);
+        const derived = computeDerivedMetrics(renalUS, safetyUS);
+
+        updateTrendCells(derived);
+        const nextSteps = generateNextSteps(dataUS, screening, treatment, dataUS.months, derived);
+        const dosingRows = buildDosingSchedule(dataUS);
+
+        alertsContainer.innerHTML = '';
+        if (dataUS.pregnancy) alertsContainer.innerHTML += '<div class="alert alert-danger">⚠️ Pregnancy: MMF, CYC, ACE-I/ARB contraindicated.</div>';
+        if (dataUS.hbv || dataUS.hcv || dataUS.latentTB) alertsContainer.innerHTML += '<div class="alert alert-warning">🦠 Infection risk: treat/screen HBV/HCV/TB.</div>';
+        if (derived.egfrSlopePerYear !== null && derived.egfrSlopePerYear <= -5) {
+            alertsContainer.innerHTML += '<div class="alert alert-warning">📉 Derived eGFR slope ' +
+                derived.egfrSlopePerYear.toFixed(1) + ' mL/min/year — rapid progression.</div>';
+        }
+
+        patientSummary.classList.add('visible');
+        let ps = '';
+        ps += '<div class="result-item"><span class="result-label">Patient</span><span class="result-value">' + esc(dataUS.patientId) + ' · ' + esc(dataUS.age) + 'y · ' + esc(dataUS.sex) + ' · ' + esc(dataUS.ethnicity) + '</span></div>';
+        ps += '<div class="result-item"><span class="result-label">Anthropometrics</span><span class="result-value">' + (dataUS.weight ? dataUS.weight + ' kg' : '—') + ' · ' + (dataUS.height ? dataUS.height + ' cm' : '—') + ' · BSA ' + (dataUS.bsa ? dataUS.bsa.toFixed(2) + ' m²' : '—') + '</span></div>';
+        ps += '<div class="result-item"><span class="result-label">Renal</span><span class="result-value">UPCR ' + fmt(dataUS.proteinuria, 2) + ' g/g · eGFR ' + fmt(dataUS.egfr, 1) + ' mL/min</span></div>';
+        ps += '<div class="result-item"><span class="result-label">ISN/RPS Class</span><span class="result-value">' + (dataUS.lnClass ? 'Class ' + esc(dataUS.lnClass) : '<span class="tag tag-warning">Not confirmed</span>') + '</span></div>';
+        patientSummary.innerHTML = ps;
+
+        screeningResult.classList.add('visible');
+        screeningContent.innerHTML =
+            '<div class="result-item"><span class="result-label">Biopsy indicated</span><span class="result-value">' + (screening.biopsyIndicated ? '<span class="tag tag-danger">YES — prompt</span>' : '<span class="tag tag-success">No</span>') + '</span></div>' +
+            '<div class="result-item"><span class="result-label">Screening interval</span><span class="result-value">' + esc(screening.screeningInterval) + '</span></div>' +
+            '<div class="result-item"><span class="result-label">Rationale</span><span class="result-value">' + esc(screening.rationale.join('; ')) + '</span></div>';
+
+        treatmentResult.classList.add('visible');
+        let tx = '';
+        tx += '<div class="result-item"><span class="result-label">Diagnosis</span><span class="result-value">' + esc(treatment.diagnosis) + '</span></div>';
+        tx += '<div class="result-item"><span class="result-label">Primary therapy</span><span class="result-value"><strong>' + esc(treatment.primaryTherapy) + '</strong></span></div>';
+        if (treatment.gcRegimen && Object.keys(treatment.gcRegimen).length) {
+            const parts = [];
+            if (treatment.gcRegimen.pulse) parts.push('Pulse: ' + treatment.gcRegimen.pulse);
+            if (treatment.gcRegimen.oral) parts.push('Oral: ' + treatment.gcRegimen.oral);
+            if (treatment.gcRegimen.note) parts.push(treatment.gcRegimen.note);
+            if (parts.length) tx += '<div class="result-item"><span class="result-label">Glucocorticoids</span><span class="result-value">' + esc(parts.join('; ')) + '</span></div>';
+        }
+        if (treatment.isRegimen && Object.keys(treatment.isRegimen).length) {
+            const parts = [];
+            if (treatment.isRegimen.primary) parts.push(treatment.isRegimen.primary);
+            if (treatment.isRegimen.thirdAgentRationale) parts.push('(' + treatment.isRegimen.thirdAgentRationale + ')');
+            if (treatment.isRegimen.thirdAgentTrial) parts.push(tip(treatment.isRegimen.thirdAgentTrial.split(' — ')[0], treatment.isRegimen.thirdAgentTrial));
+            if (treatment.isRegimen.mpaa) parts.push(treatment.isRegimen.mpaa);
+            if (treatment.isRegimen.alternative) parts.push(treatment.isRegimen.alternative);
+            if (treatment.isRegimen.options) parts.push('Options: ' + treatment.isRegimen.options);
+            if (treatment.isRegimen.azathioprine) parts.push(treatment.isRegimen.azathioprine);
+            if (treatment.isRegimen.cni) parts.push(treatment.isRegimen.cni);
+            if (treatment.isRegimen.note) parts.push(treatment.isRegimen.note);
+            if (parts.length) tx += '<div class="result-item"><span class="result-label">Immunosuppression</span><span class="result-value">' + parts.join('; ') + '</span></div>';
+        }
+        if (treatment.adjunctive && Object.keys(treatment.adjunctive).length) {
+            const adj = Object.entries(treatment.adjunctive).map(([k, v]) => {
+                if (typeof v === 'object' && v.medication) return v.medication + (v.dose ? ' — ' + v.dose : '');
+                return typeof v === 'string' ? v : '';
+            }).filter(Boolean).join('; ');
+            if (adj) tx += '<div class="result-item"><span class="result-label">Adjunctive</span><span class="result-value">' + esc(adj) + '</span></div>';
+        }
+        if (treatment.durationYears) tx += '<div class="result-item"><span class="result-label">Duration</span><span class="result-value">' + esc(treatment.durationYears) + '</span></div>';
+        if (treatment.milestones && Object.keys(treatment.milestones).length) {
+            const mStr = Object.entries(treatment.milestones).map(([k,v]) => k + ': ' + v).join('; ');
+            tx += '<div class="result-item"><span class="result-label">Milestones</span><span class="result-value">' + esc(mStr) + '</span></div>';
+        }
+        treatmentContent.innerHTML = tx;
+
+        agentComparisonResult.classList.add('visible');
+        agentComparisonContent.innerHTML = buildAgentComparison(dataUS);
+
+        agentDetailsResult.classList.add('visible');
+        agentDetailsContent.innerHTML = buildAgentDetails(dataUS);
+
+        dosingResult.classList.add('visible');
+        dosingContent.innerHTML = renderDosingTable(dosingRows, dataUS);
+        ganttResult.classList.add('visible');
+        ganttContent.innerHTML = buildGanttChart(dataUS);
+
+        const hasRenal = Object.keys(renalUS).some(k => renalUS[k] && renalUS[k].some(v => v !== null));
+        if (hasRenal) {
+            chart1Result.classList.add('visible');
+            chart1Content.innerHTML = buildChart1(dataUS, renalUS, expectedUS, derived);
+        } else chart1Result.classList.remove('visible');
+
+        const hasSafety = Object.keys(safetyUS).some(k => safetyUS[k] && safetyUS[k].some(v => v !== null));
+        if (hasSafety) {
+            chart2Result.classList.add('visible');
+            chart2Content.innerHTML = buildChart2(dataUS, safetyUS, expectedUS, derived);
+            chart3Result.classList.add('visible');
+            chart3Content.innerHTML = buildChart3(dataUS, safetyUS, expectedUS, derived);
+        } else {
+            chart2Result.classList.remove('visible');
+            chart3Result.classList.remove('visible');
+        }
+
+        metricsResult.classList.add('visible');
+        metricsContent.innerHTML = buildMetricsPanel(derived, renalUS, safetyUS);
+
+        responseResult.classList.add('visible');
+        responseContent.innerHTML = '<div class="result-item"><span class="result-label">Assessment</span><span class="result-value">' + esc(responseText) + '</span></div>';
+
+        nextStepsResult.classList.add('visible');
+        nextStepsList.innerHTML = '';
+        nextSteps.forEach(s => { const li = document.createElement('li'); li.textContent = s; nextStepsList.appendChild(li); });
+
+        const isRefractory = dataUS.months >= 6 && dataUS.proteinuria !== null && dataUS.proteinuria >= 0.5 && dataUS.baselineProteinuria !== null && dataUS.proteinuria > 0.5 * dataUS.baselineProteinuria;
+        if (isRefractory) {
+            investigationalResult.classList.add('visible');
+            investigationalContent.innerHTML = buildInvestigationalPanel(dataUS);
+        } else investigationalResult.classList.remove('visible');
+
+        statusBadge.textContent = '✓ Updated';
+        statusBadge.style.background = '#e8f5e9';
+        statusBadge.style.color = '#2e7d32';
+        emptyState.style.display = 'none';
+    }
+
+    function resetForm() {
+        form.reset();
+        ['hematuria','antiDsDNA','lowComplement','hypertension'].forEach(id => { $(id).checked = true; });
+        [patientSummary, screeningResult, treatmentResult, agentComparisonResult, agentDetailsResult,
+         dosingResult, ganttResult, chart1Result, chart2Result, chart3Result, metricsResult,
+         responseResult, nextStepsResult, investigationalResult].forEach(el => el.classList.remove('visible'));
+        alertsContainer.innerHTML = '';
+        emptyState.style.display = 'block';
+        statusBadge.textContent = 'Ready';
+        statusBadge.style.background = '';
+        statusBadge.style.color = '';
+        $('bsaDisplay').value = '—';
+        clearTable('renalTable');
+        clearTable('safetyTable');
+        setTimeout(runAnalysis, 50);
+    }
+
+    // ============================================================
+    //  EVENT WIRING
+    // ============================================================
+    form.addEventListener('submit', e => { e.preventDefault(); runAnalysis(); });
+    btnReset.addEventListener('click', e => { e.preventDefault(); resetForm(); });
+
+    document.querySelectorAll('#globalUnitToggle button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const newSystem = btn.getAttribute('data-unit');
+            setUnitSystem(newSystem);
+        });
+    });
+
+    $('btnFillRenalExpected').addEventListener('click', prefillRenalExpected);
+    $('btnFillSafetyExpected').addEventListener('click', prefillSafetyExpected);
+    $('btnClearRenal').addEventListener('click', () => { clearTable('renalTable'); runAnalysis(); });
+    $('btnClearSafety').addEventListener('click', () => { clearTable('safetyTable'); runAnalysis(); });
+
+    $('btnExportCSV').addEventListener('click', () => downloadFile('ln-followup-' + (getVal('patientId') || 'patient') + '.csv', buildCSV()));
+    $('btnExportRenal').addEventListener('click', () => downloadFile('ln-renal-' + (getVal('patientId') || 'patient') + '.csv', buildSingleTableCSV('renalTable', 'renal')));
+    $('btnExportSafety').addEventListener('click', () => downloadFile('ln-safety-' + (getVal('patientId') || 'patient') + '.csv', buildSingleTableCSV('safetyTable', 'safety')));
+    $('csvFileInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try { importCSV(ev.target.result); }
+            catch (err) { alert('Error parsing CSV: ' + err.message); }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    });
+
+    ['renalTable','safetyTable'].forEach(tid => {
+        $(tid).addEventListener('input', () => {
+            clearTimeout(window.__redrawTimer);
+            window.__redrawTimer = setTimeout(() => {
+                if (statusBadge.textContent.indexOf('Updated') !== -1) runAnalysis();
+            }, 400);
+        });
+    });
+
+    ['weight','height'].forEach(id => {
+        $(id).addEventListener('input', () => {
+            const w = getNum('weight'), h = getNum('height');
+            const bsa = calcBSA(w, h);
+            $('bsaDisplay').value = bsa ? bsa.toFixed(2) + ' m²' : '—';
+        });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        updateUnitLabels();
+        setTimeout(() => {
+            prefillRenalExpected();
+            prefillSafetyExpected();
+            runAnalysis();
+        }, 100);
+    });
+})();
+</script>
+</body>
+</html>
